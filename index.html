@@ -149,19 +149,31 @@
     border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;}
   .resp-list li{border-bottom:1px solid var(--border);}
   .resp-list li:last-child{border-bottom:0;}
-  .resp-list button{
-    width:100%;text-align:left;background:none;border:0;padding:14px 18px;
+  .resp-row{display:flex;align-items:stretch;}
+  .resp-list button.resp-main{
+    flex:1;width:100%;text-align:left;background:none;border:0;padding:14px 18px;
     display:flex;align-items:center;justify-content:space-between;gap:10px;
     font-size:14.5px;color:var(--ink);font-weight:500;
   }
-  .resp-list button:hover{background:var(--surface-alt);}
+  .resp-list button.resp-main:hover{background:var(--surface-alt);}
   .resp-list button .num{font-family:'JetBrains Mono',monospace;color:var(--muted);
     font-size:12px;margin-right:10px;font-weight:400;}
   .resp-list .chev{color:var(--muted);flex:none;}
+  .edit-btn{
+    flex:none;width:44px;border:0;border-left:1px solid var(--border);background:none;
+    color:var(--muted);display:flex;align-items:center;justify-content:center;
+  }
+  .edit-btn:hover{background:var(--surface-alt);color:var(--accent-dark);}
   .empty-state{
     background:var(--surface);border:1px dashed var(--border);border-radius:var(--radius);
     padding:40px 20px;text-align:center;color:var(--muted);font-size:14px;
   }
+  .add-response-btn{
+    width:100%;margin-top:12px;padding:12px;border-radius:var(--radius);
+    border:1.5px dashed var(--border);background:none;color:var(--muted);
+    font-size:13.5px;font-weight:600;
+  }
+  .add-response-btn:hover{border-color:var(--accent);color:var(--accent-dark);background:var(--accent-soft);}
 
   /* modal */
   .overlay{
@@ -192,7 +204,8 @@
     width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:9px;
     font-size:14px;font-family:'Inter',sans-serif;color:var(--ink);background:var(--surface);
   }
-  .field-row input:focus{border-color:var(--accent);}
+  .field-row input:focus, .field-row textarea:focus{border-color:var(--accent);}
+  .field-row textarea{min-height:140px;resize:vertical;font-family:'JetBrains Mono',monospace;font-size:12.5px;line-height:1.5;}
 
   .toggle-group{display:flex;gap:8px;margin-bottom:16px;}
   .toggle-group .opt{
@@ -211,6 +224,8 @@
   .btn-primary:hover{background:#0C1613;}
   .btn-ghost{background:none;border-color:var(--border);color:var(--muted);}
   .btn-ghost:hover{border-color:#C7D3CC;color:var(--ink);}
+  .btn-danger{background:none;border-color:var(--warn-soft);color:var(--warn);}
+  .btn-danger:hover{border-color:var(--warn);background:var(--warn-soft);}
 
   /* result / ticket slip */
   .result-overlay{position:fixed;inset:0;background:rgba(16,26,22,0.45);
@@ -243,6 +258,27 @@
   }
   .slip-foot{padding:14px 22px 20px;display:flex;gap:10px;justify-content:flex-end;}
 
+  /* tracking form panel */
+  .track-panel{
+    margin-top:18px;padding-top:16px;border-top:1px dashed var(--border);
+  }
+  .track-head{
+    font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.06em;
+    text-transform:uppercase;color:var(--muted);margin-bottom:12px;
+  }
+  .track-note{font-size:12px;color:var(--muted);margin:0 0 12px;}
+
+  /* sync banner */
+  .sync-banner{
+    display:none;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;
+    font-size:11.5px;color:var(--muted);background:var(--surface-alt);border:1px solid var(--border);
+    padding:6px 12px;border-radius:999px;
+  }
+  .sync-banner.show{display:inline-flex;}
+  .sync-banner.err{color:var(--warn);background:var(--warn-soft);border-color:#EAC898;}
+  .sync-dot{width:7px;height:7px;border-radius:50%;background:var(--accent);flex:none;}
+  .sync-banner.err .sync-dot{background:var(--warn);}
+
   footer.hint{margin-top:36px;text-align:center;color:var(--muted);font-size:12px;}
 
   @media (max-width:560px){
@@ -263,7 +299,11 @@
         <p>Pre-written replies, filled and copied in seconds</p>
       </div>
     </div>
-    <div class="stat-pill" id="statPill">-- responses across -- categories</div>
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+      <span class="sync-banner" id="syncBanner"><span class="sync-dot"></span><span id="syncBannerText">Synced</span></span>
+      <div class="stat-pill" id="statPill">-- responses across -- categories</div>
+      <button class="btn btn-ghost" id="editAccessBtn" type="button" style="padding:6px 12px;font-size:12px;">🔒 Edit locked</button>
+    </div>
   </header>
 
   <!-- HOME VIEW -->
@@ -299,9 +339,10 @@
     <div class="empty-state" id="catEmptyState" style="display:none;">
       No responses saved here yet — this category is ready whenever you add data for it.
     </div>
+    <button class="add-response-btn" id="addResponseBtn" type="button" style="display:none;">+ Add a new response to this category</button>
   </div>
 
-  <footer class="hint">Fields wrapped in braces are filled per response · Nothing here is sent anywhere, it all stays in your browser tab</footer>
+  <footer class="hint">Fields wrapped in braces are filled per response · Saved responses sync to everyone via the shared database</footer>
 </div>
 
 <!-- FIELD MODAL -->
@@ -369,6 +410,19 @@
     <div class="copy-status" id="copyStatus">Copied to clipboard — ready to paste</div>
     <div class="slip-body">
       <textarea id="slipText" spellcheck="false"></textarea>
+
+      <div class="track-panel" id="trackPanel">
+        <div class="track-head">Tracking form</div>
+        <p class="track-note">Ticket ID, Order ID, Sub-Issue type, Ticket status and Action taken are carried over automatically. The form opens in a new tab, pre-filled — review and hit Submit there yourself, so it always goes out under your own logged-in company email.</p>
+        <div id="trackExtraFields"></div>
+        <span class="toggle-label">Call attempt done on reopen</span>
+        <div class="toggle-group" id="callToggle">
+          <button type="button" class="opt" data-val="yes">Yes</button>
+          <button type="button" class="opt" data-val="no">No</button>
+          <button type="button" class="opt" data-val="na">NA (Fresh)</button>
+        </div>
+        <button class="btn btn-primary" id="openTrackingFormBtn" style="width:100%;">Open pre-filled tracking form ↗</button>
+      </div>
     </div>
     <div class="slip-foot">
       <button class="btn btn-ghost" id="slipEditFields">Edit fields</button>
@@ -377,7 +431,81 @@
   </div>
 </div>
 
+<!-- EDIT ACCESS MODAL -->
+<div class="overlay" id="unlockOverlay">
+  <div class="modal" style="max-width:360px;">
+    <div class="modal-head">
+      <div>
+        <h3>Edit access</h3>
+        <p>Enter the edit password</p>
+      </div>
+      <button class="modal-close" id="unlockClose">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="field-row" style="margin-bottom:8px;">
+        <input type="password" id="unlockPassword" placeholder="Password" autocomplete="off">
+      </div>
+      <p id="unlockError" style="display:none;margin:0 0 8px;font-size:12.5px;color:var(--warn);">Incorrect password.</p>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" id="unlockCancel">Cancel</button>
+      <button class="btn btn-primary" id="unlockSubmit">Unlock</button>
+    </div>
+  </div>
+</div>
+
+<!-- TEMPLATE EDITOR MODAL (add / edit / delete a response, syncs to DB) -->
+<div class="overlay" id="templateOverlay">
+  <div class="modal" style="max-width:600px;">
+    <div class="modal-head">
+      <div>
+        <h3 id="templateModalTitle">Edit response</h3>
+        <p id="templateModalCat">CATEGORY</p>
+      </div>
+      <button class="modal-close" id="templateModalClose">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="field-row">
+        <label for="tplTitle">Title</label>
+        <input type="text" id="tplTitle" placeholder="e.g. Amount Already Correct">
+      </div>
+      <div class="field-row">
+        <label for="tplEn">English template — use {token} for fillable fields, %%R%% for the reopen line</label>
+        <textarea id="tplEn" placeholder="Hi {name},&#10;&#10;This is regarding Ticket ID {ticketid}.&#10;&#10;%%R%%&#10;&#10;..."></textarea>
+      </div>
+      <div class="field-row">
+        <label for="tplHi">Hindi template</label>
+        <textarea id="tplHi"></textarea>
+      </div>
+    </div>
+    <div class="modal-foot" style="justify-content:space-between;">
+      <button class="btn btn-danger" id="tplDelete">Delete response</button>
+      <div style="display:flex;gap:10px;">
+        <button class="btn btn-ghost" id="tplCancel">Cancel</button>
+        <button class="btn btn-primary" id="tplSave">Save &amp; sync</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
+/* ---------------------------------------------------------------------
+   BACKEND SYNC CONFIG
+   Point this at your deployed backend (the Express + MongoDB server).
+   Leave it as-is for local testing with `npm start` on the backend.
+--------------------------------------------------------------------- */
+const API_BASE = "http://localhost:3000"; // <-- change to your deployed backend URL
+
+/* ---------------------------------------------------------------------
+   EDIT ACCESS
+   Anyone can browse and copy responses. Only someone who enters this
+   password can add/edit/delete responses. This is a simple frontend
+   gate only — it does not stop someone from reading this password out
+   of the page source, so don't rely on it for anything truly sensitive.
+--------------------------------------------------------------------- */
+const EDIT_PASSWORD = "8770956153";
+let editUnlocked = false;
+
 /* ---------------------------------------------------------------------
    REOPEN marker: placed on its own paragraph right after the ticket-ID
    line in every template. Fresh => paragraph removed. Reopen => replaced
@@ -388,7 +516,39 @@ const REOPEN_HI = "Jaisa ki aapko previous e-mail mein bataya gaya tha,";
 const R = "%%R%%";
 
 /* ---------------------------------------------------------------------
-   DATA
+   GOOGLE FORM TRACKER CONFIG
+--------------------------------------------------------------------- */
+const FORM_BASE_URL = "https://docs.google.com/forms/d/e/1FAIpQLSdCONtblwCKhXEYMei3mJJAtx9kSI0vMhqzGxEHEiI_TlW4QA/viewform";
+
+const FORM_ENTRIES = {
+  ticketid: "entry.936500075",
+  orderid: "entry.27759737",
+  subIssue: "entry.2052332066",
+  ticketStatus: "entry.1607672279",
+  actionTaken: "entry.875956365",
+  callAttempt: "entry.1625845681",
+  date: "entry.1495890839"
+};
+
+/* Maps your category ids to the exact text of the Sub-Issue type dropdown option.
+   Categories not listed here (extras, anr, pnr) are left blank on purpose —
+   you pick the Sub-Issue type manually on the form for those. */
+const SUBISSUE_MAP = {
+  orderpay: "Order Pay",
+  ldrp: "Long Distance Return Pay",
+  joiningbonus: "Joining Bonus",
+  updatevehicle: "Vehicle Type Change Request",
+  updatenumber: "Change Mobile Number",
+  updateaccount: "Update Bank Account",
+  referralbonus: "Referral Bonus"
+};
+
+const STATUS_MAP = { fresh: "Fresh Open", reopen: "Reopen" };
+const CALL_MAP = { yes: "Yes", no: "No", na: "NA for Fresh Ticket" };
+
+/* ---------------------------------------------------------------------
+   DATA (local defaults — used if the shared database has nothing yet,
+   or if the backend can't be reached)
 --------------------------------------------------------------------- */
 const CATEGORIES = [
   {
@@ -644,9 +804,12 @@ const CATEGORIES = [
 ];
 
 /* assign stable ids */
-CATEGORIES.forEach(cat=>{
-  cat.responses.forEach((r,i)=>{ r.id = cat.id + "-" + i; r.catId = cat.id; });
-});
+function assignIds(){
+  CATEGORIES.forEach(cat=>{
+    cat.responses.forEach((r,i)=>{ r.id = cat.id + "-" + i; r.catId = cat.id; });
+  });
+}
+assignIds();
 
 const FIELD_LABELS = {
   name: "Rider Name",
@@ -696,6 +859,9 @@ let currentCategory = null;
 let currentResponse = null;
 let lang = "en";
 let status = "fresh";
+let currentValues = {};   // last generated field values (ticketid, orderid, etc.)
+let callAttempt = null;   // "yes" | "no" | "na"
+let templateEditMode = null; // "add" | "edit"
 
 function totalResponses(){ return CATEGORIES.reduce((s,c)=>s+c.responses.length,0); }
 
@@ -704,6 +870,11 @@ function init(){
     totalResponses() + " responses across " + CATEGORIES.length + " categories";
   renderCatGrid();
   bindEvents();
+  // If a category is currently open (e.g. re-render after a sync), refresh its list too.
+  if(currentCategory){
+    const stillExists = CATEGORIES.find(c=>c.id===currentCategory.id);
+    if(stillExists){ currentCategory = stillExists; renderRespList(document.getElementById("catSearch").value); }
+  }
 }
 
 function renderCatGrid(){
@@ -736,6 +907,7 @@ function openCategory(catId){
   document.getElementById("catViewCode").textContent = currentCategory.code;
   document.getElementById("catViewName").textContent = currentCategory.name;
   document.getElementById("catSearch").value = "";
+  document.getElementById("addResponseBtn").style.display = editUnlocked ? "block" : "none";
   renderRespList("");
   window.scrollTo({top:0, behavior:"instant"});
 }
@@ -763,12 +935,19 @@ function renderRespList(filter){
   items.forEach((r)=>{
     const idx = currentCategory.responses.indexOf(r);
     const li = document.createElement("li");
-    const b = document.createElement("button");
-    b.type="button";
-    b.innerHTML = `<span><span class="num">${String(idx+1).padStart(2,"0")}</span>${r.title}</span>
-      <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"></polyline></svg>`;
-    b.addEventListener("click", ()=> openFieldModal(r));
-    li.appendChild(b);
+    li.innerHTML = `
+      <div class="resp-row">
+        <button type="button" class="resp-main">
+          <span><span class="num">${String(idx+1).padStart(2,"0")}</span>${r.title}</span>
+          <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </button>
+        ${editUnlocked ? `<button type="button" class="edit-btn" title="Edit this response" aria-label="Edit this response">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg>
+        </button>` : ``}
+      </div>`;
+    li.querySelector(".resp-main").addEventListener("click", ()=> openFieldModal(r));
+    const editBtn = li.querySelector(".edit-btn");
+    if(editBtn) editBtn.addEventListener("click", ()=> openTemplateEditor("edit", r));
     list.appendChild(li);
   });
 }
@@ -853,6 +1032,7 @@ function generateAndCopy(){
     template = template.replace(re, values[tok]);
   });
 
+  currentValues = values;
   showResult(template, values.ticketid || "");
   closeFieldModal();
 }
@@ -868,6 +1048,7 @@ function showResult(text, ticketid){
   document.getElementById("slipText").value = text;
   document.getElementById("resultOverlay").classList.add("show");
   copyToClipboard(text);
+  renderTrackPanel();
 }
 
 function copyToClipboard(text){
@@ -890,6 +1071,62 @@ function copyToClipboard(text){
 
 function closeResult(){
   document.getElementById("resultOverlay").classList.remove("show");
+}
+
+/* ---------------------------------------------------------------------
+   TRACKING FORM PANEL
+--------------------------------------------------------------------- */
+function renderTrackPanel(){
+  const host = document.getElementById("trackExtraFields");
+  host.innerHTML = "";
+
+  // Ticket ID / Order ID fallback inputs, only shown if this response's
+  // template didn't already capture them.
+  if(!currentValues.ticketid){
+    host.innerHTML += `
+      <div class="field-row">
+        <label for="track_ticketid">Ticket ID</label>
+        <input type="text" id="track_ticketid" placeholder="Enter ticket ID">
+      </div>`;
+  }
+  if(!currentValues.orderid){
+    host.innerHTML += `
+      <div class="field-row">
+        <label for="track_orderid">Order ID</label>
+        <input type="text" id="track_orderid" placeholder="Enter order ID">
+      </div>`;
+  }
+
+  // default call-attempt guess based on ticket status
+  callAttempt = status === "fresh" ? "na" : null;
+  setToggle("callToggle", callAttempt);
+}
+
+function buildFormURL(){
+  const cat = CATEGORIES.find(c=>c.id===currentResponse.catId);
+  const ticketid = currentValues.ticketid || (document.getElementById("track_ticketid")?.value.trim() || "");
+  const orderid = currentValues.orderid || (document.getElementById("track_orderid")?.value.trim() || "");
+
+  const today = new Date();
+  const dateStr = today.getFullYear() + "-" + String(today.getMonth()+1).padStart(2,"0") + "-" + String(today.getDate()).padStart(2,"0");
+
+  const params = new URLSearchParams();
+  params.set("usp", "pp_url");
+  if(ticketid) params.set(FORM_ENTRIES.ticketid, ticketid);
+  if(orderid) params.set(FORM_ENTRIES.orderid, orderid);
+  const subIssue = SUBISSUE_MAP[cat.id];
+  if(subIssue) params.set(FORM_ENTRIES.subIssue, subIssue);
+  params.set(FORM_ENTRIES.ticketStatus, STATUS_MAP[status] || "");
+  params.set(FORM_ENTRIES.actionTaken, "Closed");
+  if(callAttempt) params.set(FORM_ENTRIES.callAttempt, CALL_MAP[callAttempt] || "");
+  params.set(FORM_ENTRIES.date, dateStr);
+
+  return FORM_BASE_URL + "?" + params.toString();
+}
+
+function openTrackingForm(){
+  const url = buildFormURL();
+  window.open(url, "_blank", "noopener");
 }
 
 /* ---------------------------------------------------------------------
@@ -942,6 +1179,164 @@ function closeSrPopup(){
 }
 
 /* ---------------------------------------------------------------------
+   TEMPLATE EDITOR — add / edit / delete a response.
+   Any change here calls persistCategories(), which pushes the whole
+   CATEGORIES tree to the backend so every other tab picks it up.
+--------------------------------------------------------------------- */
+let tplTarget = null; // the response object being edited (null when adding)
+
+function openTemplateEditor(mode, resp){
+  if(!editUnlocked){ openUnlockModal(); return; }
+  templateEditMode = mode;
+  tplTarget = resp || null;
+  const cat = currentCategory;
+
+  document.getElementById("templateModalTitle").textContent = mode === "add" ? "Add a new response" : "Edit response";
+  document.getElementById("templateModalCat").textContent = cat.code + " · " + cat.name;
+  document.getElementById("tplTitle").value = resp ? resp.title : "";
+  document.getElementById("tplEn").value = resp ? resp.en : `Hi {name},\n\nThis is regarding Ticket ID {ticketid}.\n\n${R}\n\n\n\nIf you are satisfied with the resolution, please take a moment to rate this ticket.\n\nThank you,\nTeam Blinkit`;
+  document.getElementById("tplHi").value = resp ? resp.hi : "";
+  document.getElementById("tplDelete").style.display = mode === "edit" ? "inline-flex" : "none";
+
+  document.getElementById("templateOverlay").classList.add("show");
+}
+
+function closeTemplateEditor(){
+  document.getElementById("templateOverlay").classList.remove("show");
+  tplTarget = null;
+}
+
+function saveTemplateEditor(){
+  const title = document.getElementById("tplTitle").value.trim();
+  const en = document.getElementById("tplEn").value;
+  const hi = document.getElementById("tplHi").value;
+
+  if(!title || !en.trim()){
+    alert("Please fill in at least a title and the English template.");
+    return;
+  }
+
+  if(templateEditMode === "add"){
+    const newResp = { title, en, hi, catId: currentCategory.id };
+    currentCategory.responses.push(newResp);
+  } else if(tplTarget){
+    tplTarget.title = title;
+    tplTarget.en = en;
+    tplTarget.hi = hi;
+  }
+  assignIds();
+
+  closeTemplateEditor();
+  init(); // re-render counts + list
+  if(currentCategory) openCategory(currentCategory.id); // keep user in the same category, refreshed
+  persistCategories();
+}
+
+function deleteTemplateEditor(){
+  if(!tplTarget) return;
+  if(!confirm(`Delete "${tplTarget.title}"? This can't be undone.`)) return;
+
+  const idx = currentCategory.responses.indexOf(tplTarget);
+  if(idx > -1) currentCategory.responses.splice(idx,1);
+
+  closeTemplateEditor();
+  init();
+  if(currentCategory) openCategory(currentCategory.id);
+  persistCategories();
+}
+
+function openUnlockModal(){
+  document.getElementById("unlockPassword").value = "";
+  document.getElementById("unlockError").style.display = "none";
+  document.getElementById("unlockOverlay").classList.add("show");
+  setTimeout(()=> document.getElementById("unlockPassword").focus(), 50);
+}
+function closeUnlockModal(){
+  document.getElementById("unlockOverlay").classList.remove("show");
+}
+function submitUnlock(){
+  const val = document.getElementById("unlockPassword").value;
+  if(val === EDIT_PASSWORD){
+    editUnlocked = true;
+    closeUnlockModal();
+    updateEditAccessUI();
+  } else {
+    document.getElementById("unlockError").style.display = "block";
+  }
+}
+function toggleEditAccessBtn(){
+  if(editUnlocked){
+    // re-locking needs no password, unlocking does
+    editUnlocked = false;
+    updateEditAccessUI();
+  } else {
+    openUnlockModal();
+  }
+}
+function updateEditAccessUI(){
+  const btn = document.getElementById("editAccessBtn");
+  btn.textContent = editUnlocked ? "🔓 Edit unlocked" : "🔒 Edit locked";
+  if(currentCategory){
+    document.getElementById("addResponseBtn").style.display = editUnlocked ? "block" : "none";
+    renderRespList(document.getElementById("catSearch").value);
+  }
+}
+
+/* ---------------------------------------------------------------------
+   BACKEND SYNC
+   loadSharedData()  -> GET /api/data   (called once on page load)
+   persistCategories() -> POST /api/data (called after any add/edit/delete)
+--------------------------------------------------------------------- */
+function setSyncBanner(state, text){
+  const el = document.getElementById("syncBanner");
+  const txt = document.getElementById("syncBannerText");
+  el.classList.toggle("show", true);
+  el.classList.toggle("err", state === "err");
+  txt.textContent = text;
+  if(state === "ok"){
+    setTimeout(()=> el.classList.remove("show"), 2200);
+  }
+}
+
+async function loadSharedData(){
+  try{
+    const res = await fetch(`${API_BASE}/api/data`);
+    const json = await res.json();
+    if(json.ok && Array.isArray(json.data) && json.data.length){
+      CATEGORIES.length = 0;
+      CATEGORIES.push(...json.data);
+      assignIds();
+    }
+    // Nothing saved yet (json.data is null) -> the local defaults above stay as-is,
+    // and the very first save will seed the database for everyone else.
+  } catch(err){
+    console.error("Could not reach backend, using local data:", err);
+    setSyncBanner("err", "Offline — using local data");
+  }
+  init();
+}
+
+async function persistCategories(){
+  setSyncBanner("ok", "Saving…");
+  try{
+    const res = await fetch(`${API_BASE}/api/data`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ data: CATEGORIES })
+    });
+    const json = await res.json();
+    if(json.ok){
+      setSyncBanner("ok", "Synced to everyone");
+    } else {
+      setSyncBanner("err", "Save failed — try again");
+    }
+  } catch(err){
+    console.error("Could not save to backend:", err);
+    setSyncBanner("err", "Save failed — check connection");
+  }
+}
+
+/* ---------------------------------------------------------------------
    EVENTS
 --------------------------------------------------------------------- */
 function bindEvents(){
@@ -949,6 +1344,10 @@ function bindEvents(){
 
   document.getElementById("catSearch").addEventListener("input", (e)=>{
     renderRespList(e.target.value);
+  });
+
+  document.getElementById("addResponseBtn").addEventListener("click", ()=>{
+    openTemplateEditor("add", null);
   });
 
   const gs = document.getElementById("globalSearch");
@@ -961,7 +1360,7 @@ function bindEvents(){
       e.preventDefault(); gs.focus();
     }
     if(e.key === "Escape"){
-      closeFieldModal(); closeResult(); closeSrPopup();
+      closeFieldModal(); closeResult(); closeSrPopup(); closeTemplateEditor(); closeUnlockModal();
     }
   });
 
@@ -993,6 +1392,12 @@ function bindEvents(){
     if(e.target.id==="resultOverlay") closeResult();
   });
 
+  document.getElementById("callToggle").addEventListener("click",(e)=>{
+    const btn = e.target.closest(".opt"); if(!btn) return;
+    callAttempt = btn.dataset.val; setToggle("callToggle", callAttempt);
+  });
+  document.getElementById("openTrackingFormBtn").addEventListener("click", openTrackingForm);
+
   document.getElementById("srPopupClose").addEventListener("click", closeSrPopup);
   document.getElementById("srPopupOverlay").addEventListener("click",(e)=>{
     if(e.target.id==="srPopupOverlay") closeSrPopup();
@@ -1011,9 +1416,28 @@ function bindEvents(){
     document.getElementById("globalSearch").value = "";
     openCategory(cat.id);
   });
+
+  document.getElementById("editAccessBtn").addEventListener("click", toggleEditAccessBtn);
+  document.getElementById("unlockClose").addEventListener("click", closeUnlockModal);
+  document.getElementById("unlockCancel").addEventListener("click", closeUnlockModal);
+  document.getElementById("unlockSubmit").addEventListener("click", submitUnlock);
+  document.getElementById("unlockPassword").addEventListener("keydown", (e)=>{
+    if(e.key === "Enter") submitUnlock();
+  });
+  document.getElementById("unlockOverlay").addEventListener("click",(e)=>{
+    if(e.target.id==="unlockOverlay") closeUnlockModal();
+  });
+
+  document.getElementById("templateModalClose").addEventListener("click", closeTemplateEditor);
+  document.getElementById("tplCancel").addEventListener("click", closeTemplateEditor);
+  document.getElementById("tplSave").addEventListener("click", saveTemplateEditor);
+  document.getElementById("tplDelete").addEventListener("click", deleteTemplateEditor);
+  document.getElementById("templateOverlay").addEventListener("click",(e)=>{
+    if(e.target.id==="templateOverlay") closeTemplateEditor();
+  });
 }
 
-init();
+loadSharedData();
 </script>
 </body>
 </html>
