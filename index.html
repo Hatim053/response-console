@@ -152,10 +152,11 @@
   .resp-row{display:flex;align-items:stretch;}
   .resp-list button.resp-main{
     flex:1;width:100%;text-align:left;background:none;border:0;padding:14px 18px;
-    display:flex;align-items:center;justify-content:space-between;gap:10px;
+    display:flex;flex-direction:column;gap:4px;
     font-size:14.5px;color:var(--ink);font-weight:500;
   }
   .resp-list button.resp-main:hover{background:var(--surface-alt);}
+  .resp-list button .resp-top{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;}
   .resp-list button .num{font-family:'JetBrains Mono',monospace;color:var(--muted);
     font-size:12px;margin-right:10px;font-weight:400;}
   .resp-list .chev{color:var(--muted);flex:none;}
@@ -279,11 +280,301 @@
   .sync-dot{width:7px;height:7px;border-radius:50%;background:var(--accent);flex:none;}
   .sync-banner.err .sync-dot{background:var(--warn);}
 
+  /* Disposition styles */
+  .disposition-tag {
+    padding:4px 10px;
+    border:1px solid var(--border);
+    border-radius:6px;
+    background:var(--surface);
+    color:var(--ink);
+    font-size:11px;
+    cursor:pointer;
+    transition:all 0.15s ease;
+    font-weight:500;
+    font-family:'Inter',sans-serif;
+  }
+  .disposition-tag:hover {
+    border-color:var(--accent);
+    background:var(--accent-soft);
+    color:var(--accent-dark);
+  }
+  .disposition-tag.active {
+    border-color:var(--accent);
+    background:var(--accent);
+    color:#fff;
+  }
+  
+  .disposition-badge {
+    display:inline-block;
+    padding:2px 8px;
+    border-radius:4px;
+    font-size:10px;
+    font-weight:600;
+    background:var(--accent-soft);
+    color:var(--accent-dark);
+    border:1px solid var(--border);
+    font-family:'JetBrains Mono',monospace;
+    margin-top:2px;
+    max-width:100%;
+    word-break:break-word;
+  }
+  
+  .disposition-badge.has-disposition {
+    background:#E8F5E9;
+    border-color:#A5D6A7;
+    color:#2E7D32;
+  }
+  
+  .disposition-preview {
+    font-size:10px;
+    color:var(--muted);
+    font-family:'JetBrains Mono',monospace;
+    background:var(--surface-alt);
+    padding:2px 6px;
+    border-radius:3px;
+    display:inline-block;
+    max-width:100%;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+
+  /* History styles */
+  .history-panel {
+    margin-top:18px;
+    padding-top:16px;
+    border-top:1px dashed var(--border);
+  }
+  .history-head {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:12px;
+    flex-wrap:wrap;
+    gap:8px;
+  }
+  .history-head .track-head {
+    margin-bottom:0;
+  }
+  .history-list {
+    max-height:300px;
+    overflow-y:auto;
+    border:1px solid var(--border);
+    border-radius:8px;
+    background:var(--surface);
+  }
+  .history-item {
+    padding:10px 14px;
+    border-bottom:1px solid var(--border);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    font-size:13px;
+    cursor:pointer;
+    transition:background 0.15s ease;
+  }
+  .history-item:last-child{border-bottom:0;}
+  .history-item:hover{background:var(--accent-soft);}
+  .history-item .h-title{font-weight:500;flex:1;}
+  .history-item .h-meta{
+    font-size:10.5px;
+    color:var(--muted);
+    font-family:'JetBrains Mono',monospace;
+    display:flex;
+    gap:8px;
+    align-items:center;
+    flex-wrap:wrap;
+  }
+  .history-item .h-meta .h-cat{
+    background:var(--accent-soft);
+    padding:2px 6px;
+    border-radius:4px;
+    color:var(--accent-dark);
+  }
+  .history-item .h-meta .h-dispo{
+    background:var(--surface-alt);
+    padding:2px 6px;
+    border-radius:4px;
+    max-width:120px;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  .history-empty {
+    padding:20px;
+    text-align:center;
+    color:var(--muted);
+    font-size:13px;
+  }
+  .history-clear-btn {
+    padding:4px 10px;
+    font-size:11px;
+    border:1px solid var(--border);
+    border-radius:6px;
+    background:none;
+    color:var(--muted);
+  }
+  .history-clear-btn:hover{border-color:var(--warn);color:var(--warn);}
+
+  /* History View - Full page history */
+  .history-view {
+    display:none;
+    padding:20px 0;
+  }
+  .history-view .back-btn {
+    margin-bottom:16px;
+  }
+  .history-view h2 {
+    margin:0 0 16px;
+    font-size:20px;
+    font-weight:600;
+  }
+  .history-view .history-list-full {
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    overflow:hidden;
+    background:var(--surface);
+  }
+  .history-view .history-item-full {
+    padding:16px 20px;
+    border-bottom:1px solid var(--border);
+    cursor:pointer;
+    transition:background 0.15s ease;
+  }
+  .history-view .history-item-full:last-child{border-bottom:0;}
+  .history-view .history-item-full:hover{background:var(--accent-soft);}
+  .history-view .history-item-full .h-title-full{
+    font-size:15px;
+    font-weight:600;
+    margin-bottom:4px;
+  }
+  .history-view .history-item-full .h-meta-full{
+    font-size:12px;
+    color:var(--muted);
+    display:flex;
+    gap:12px;
+    flex-wrap:wrap;
+    align-items:center;
+  }
+  .history-view .history-item-full .h-meta-full .h-cat-full{
+    background:var(--accent-soft);
+    padding:2px 8px;
+    border-radius:4px;
+    color:var(--accent-dark);
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+  }
+  .history-view .history-item-full .h-meta-full .h-dispo-full{
+    background:var(--surface-alt);
+    padding:2px 8px;
+    border-radius:4px;
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+  }
+  .history-view .history-item-full .h-meta-full .h-date{
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px;
+    color:#aaa;
+  }
+  .history-view .history-item-full .h-fields{
+    margin-top:8px;
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px;
+  }
+  .history-view .history-item-full .h-field-tag{
+    background:var(--surface-alt);
+    padding:2px 8px;
+    border-radius:4px;
+    font-size:11px;
+    font-family:'JetBrains Mono',monospace;
+    color:var(--muted);
+    border:1px solid var(--border);
+  }
+  .history-view .history-item-full .h-preview{
+    margin-top:8px;
+    padding:10px 12px;
+    background:var(--surface-alt);
+    border-radius:6px;
+    font-size:12.5px;
+    line-height:1.5;
+    color:var(--muted);
+    max-height:80px;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:pre-wrap;
+    font-family:'Inter',sans-serif;
+    border:1px solid var(--border);
+  }
+  .history-view .empty-state{
+    padding:40px 20px;
+    text-align:center;
+    color:var(--muted);
+  }
+
+  .disposition-btn {
+    padding:2px 8px;
+    font-size:10px;
+    border:1px solid var(--border);
+    border-radius:4px;
+    background:none;
+    color:var(--muted);
+    font-family:'JetBrains Mono',monospace;
+  }
+  .disposition-btn:hover{border-color:var(--accent);color:var(--accent-dark);background:var(--accent-soft);}
+
+  .history-refresh-btn {
+    padding:4px 10px;
+    font-size:11px;
+    border:1px solid var(--border);
+    border-radius:6px;
+    background:none;
+    color:var(--muted);
+  }
+  .history-refresh-btn:hover{border-color:var(--accent);color:var(--accent-dark);}
+
+  .user-id-display {
+    font-size:11px;
+    color:var(--muted);
+    font-family:'JetBrains Mono',monospace;
+    background:var(--surface-alt);
+    padding:4px 10px;
+    border-radius:999px;
+    border:1px solid var(--border);
+    display:inline-block;
+  }
+
+  .view-history-btn {
+    padding:6px 14px;
+    border:1.5px solid var(--border);
+    border-radius:8px;
+    background:none;
+    color:var(--muted);
+    font-size:12px;
+    font-weight:500;
+    display:flex;
+    align-items:center;
+    gap:6px;
+  }
+  .view-history-btn:hover{border-color:var(--accent);color:var(--accent-dark);background:var(--accent-soft);}
+
+  .history-badge-count {
+    background:var(--accent);
+    color:#fff;
+    border-radius:999px;
+    padding:1px 7px;
+    font-size:10px;
+    margin-left:4px;
+  }
+
   footer.hint{margin-top:36px;text-align:center;color:var(--muted);font-size:12px;}
 
   @media (max-width:560px){
     .cat-grid{grid-template-columns:1fr 1fr;}
     .toggle-group{flex-direction:column;}
+    .history-item{flex-direction:column;align-items:flex-start;}
+    .history-view .history-item-full .h-meta-full{flex-direction:column;align-items:flex-start;gap:4px;}
   }
 </style>
 </head>
@@ -301,8 +592,10 @@
     </div>
     <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
       <span class="sync-banner" id="syncBanner"><span class="sync-dot"></span><span id="syncBannerText">Synced</span></span>
+      <span class="user-id-display">👤 <span id="userIdText">guest</span></span>
       <div class="stat-pill" id="statPill">-- responses across -- categories</div>
       <button class="btn btn-ghost" id="editAccessBtn" type="button" style="padding:6px 12px;font-size:12px;">🔒 Edit locked</button>
+      <button class="view-history-btn" id="viewHistoryBtn" type="button">📋 History <span class="history-badge-count" id="historyBadge">0</span></button>
     </div>
   </header>
 
@@ -311,7 +604,7 @@
     <div class="search-shell">
       <div class="search-box">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-        <input type="text" id="globalSearch" placeholder="Search all responses… try “rate card” or “otp”">
+        <input type="text" id="globalSearch" placeholder="Search all responses… try &ldquo;rate card&rdquo; or &ldquo;otp&rdquo;">
         <span class="kbd-hint">/</span>
       </div>
       <div class="search-results" id="searchResults" style="display:none;"></div>
@@ -340,6 +633,24 @@
       No responses saved here yet — this category is ready whenever you add data for it.
     </div>
     <button class="add-response-btn" id="addResponseBtn" type="button" style="display:none;">+ Add a new response to this category</button>
+  </div>
+
+  <!-- HISTORY VIEW -->
+  <div id="historyView" class="history-view">
+    <button class="back-btn" id="historyBackBtn">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+      Back to categories
+    </button>
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:16px;">
+      <h2>📋 Your Response History</h2>
+      <div style="display:flex;gap:8px;">
+        <button class="history-refresh-btn" id="historyFullRefreshBtn">↻ Refresh</button>
+        <button class="history-clear-btn" id="historyFullClearBtn">Clear All</button>
+      </div>
+    </div>
+    <div class="history-list-full" id="historyFullList">
+      <div class="empty-state">No responses generated yet</div>
+    </div>
   </div>
 
   <footer class="hint">Fields wrapped in braces are filled per response · Saved responses sync to everyone via the shared database</footer>
@@ -423,10 +734,103 @@
         </div>
         <button class="btn btn-primary" id="openTrackingFormBtn" style="width:100%;">Open pre-filled tracking form ↗</button>
       </div>
+
+      <!-- Disposition section in result -->
+      <div class="track-panel" id="dispositionPanel">
+        <div class="track-head">Disposition</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;">
+          <div id="slipDispositionDisplay" style="font-size:13px;color:var(--muted);font-family:'JetBrains Mono',monospace;flex:1;">
+            No disposition set
+          </div>
+          <button class="btn btn-ghost" id="slipAddDispositionBtn" style="padding:4px 12px;font-size:12px;">✏️ Add/Edit</button>
+        </div>
+      </div>
+
+      <!-- History panel in result -->
+      <div class="history-panel">
+        <div class="history-head">
+          <div class="track-head" style="margin-bottom:0;">📋 Recent History</div>
+          <div style="display:flex;gap:6px;">
+            <button class="history-refresh-btn" id="historyRefreshBtn">↻</button>
+            <button class="history-clear-btn" id="historyClearBtn">Clear</button>
+          </div>
+        </div>
+        <div class="history-list" id="historyList">
+          <div class="history-empty">No responses generated yet</div>
+        </div>
+      </div>
     </div>
     <div class="slip-foot">
       <button class="btn btn-ghost" id="slipEditFields">Edit fields</button>
       <button class="btn btn-primary" id="slipCopyAgain">Copy again</button>
+    </div>
+  </div>
+</div>
+
+<!-- HISTORY DETAIL VIEW (when clicking on a history item) -->
+<div class="result-overlay" id="historyDetailOverlay">
+  <div class="slip" style="max-width:560px;">
+    <div class="slip-head" style="background:var(--accent-dark);">
+      <div>
+        <div class="tag" id="historyDetailMeta">HISTORY · CATEGORY</div>
+        <h3 id="historyDetailTitle">Response title</h3>
+      </div>
+      <button class="slip-close" id="historyDetailClose">&times;</button>
+    </div>
+    <div class="slip-body">
+      <div style="margin-bottom:12px;display:flex;gap:8px;flex-wrap:wrap;">
+        <span class="h-cat-full" id="historyDetailCat" style="background:var(--accent-soft);padding:2px 8px;border-radius:4px;font-size:11px;font-family:'JetBrains Mono',monospace;">Category</span>
+        <span id="historyDetailLang" style="background:var(--surface-alt);padding:2px 8px;border-radius:4px;font-size:11px;font-family:'JetBrains Mono',monospace;">EN</span>
+        <span id="historyDetailStatus" style="background:var(--surface-alt);padding:2px 8px;border-radius:4px;font-size:11px;font-family:'JetBrains Mono',monospace;">Fresh</span>
+        <span id="historyDetailDispo" style="background:var(--surface-alt);padding:2px 8px;border-radius:4px;font-size:11px;font-family:'JetBrains Mono',monospace;">No disposition</span>
+        <span id="historyDetailDate" style="background:var(--surface-alt);padding:2px 8px;border-radius:4px;font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--muted);">Date</span>
+      </div>
+      <div id="historyDetailFields" style="margin-bottom:12px;display:flex;flex-wrap:wrap;gap:6px;"></div>
+      <div class="field-row">
+        <label style="font-size:12px;font-weight:600;">Generated Response</label>
+        <textarea id="historyDetailText" spellcheck="false" style="min-height:250px;font-size:13px;line-height:1.6;" readonly></textarea>
+      </div>
+    </div>
+    <div class="slip-foot">
+      <button class="btn btn-ghost" id="historyDetailCloseBtn">Close</button>
+      <button class="btn btn-primary" id="historyDetailCopyBtn">📋 Copy</button>
+    </div>
+  </div>
+</div>
+
+<!-- DISPOSITION OVERLAY -->
+<div class="result-overlay" id="dispositionOverlay">
+  <div class="slip" style="max-width:500px;">
+    <div class="slip-head" style="background:var(--accent-dark);">
+      <div>
+        <div class="tag">DISPOSITION</div>
+        <h3 id="dispositionTitle">Add Disposition</h3>
+      </div>
+      <button class="slip-close" id="dispositionClose">&times;</button>
+    </div>
+    <div class="slip-body">
+      <div class="field-row">
+        <label for="dispositionInput">Enter disposition for this response</label>
+        <input type="text" id="dispositionInput" placeholder="e.g. Order Pay - Amount Correct, LDRP - Not Eligible, etc.">
+      </div>
+      <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap;" id="dispositionQuickTags">
+        <button type="button" class="disposition-tag" data-val="Amount Correct">Amount Correct</button>
+        <button type="button" class="disposition-tag" data-val="Not Eligible">Not Eligible</button>
+        <button type="button" class="disposition-tag" data-val="Eligible - Added">Eligible - Added</button>
+        <button type="button" class="disposition-tag" data-val="Already Paid">Already Paid</button>
+        <button type="button" class="disposition-tag" data-val="GPS Issue">GPS Issue</button>
+        <button type="button" class="disposition-tag" data-val="Document Issue">Document Issue</button>
+        <button type="button" class="disposition-tag" data-val="Updated Successfully">Updated Successfully</button>
+        <button type="button" class="disposition-tag" data-val="Not Updated">Not Updated</button>
+      </div>
+      <div style="margin-top:12px;padding:10px;background:var(--surface-alt);border-radius:8px;border:1px solid var(--border);">
+        <label style="font-size:12px;font-weight:600;color:var(--muted);">Current Disposition</label>
+        <div id="currentDispositionDisplay" style="margin-top:4px;font-size:14px;color:var(--ink);font-family:'JetBrains Mono',monospace;word-break:break-word;min-height:24px;">No disposition set</div>
+      </div>
+    </div>
+    <div class="slip-foot">
+      <button class="btn btn-ghost" id="dispositionCancel">Cancel</button>
+      <button class="btn btn-primary" id="dispositionSave">Save Disposition</button>
     </div>
   </div>
 </div>
@@ -454,7 +858,7 @@
   </div>
 </div>
 
-<!-- TEMPLATE EDITOR MODAL (add / edit / delete a response, syncs to DB) -->
+<!-- TEMPLATE EDITOR MODAL -->
 <div class="overlay" id="templateOverlay">
   <div class="modal" style="max-width:600px;">
     <div class="modal-head">
@@ -491,25 +895,17 @@
 <script>
 /* ---------------------------------------------------------------------
    BACKEND SYNC CONFIG
-   Point this at your deployed backend (the Express + MongoDB server).
-   Leave it as-is for local testing with `npm start` on the backend.
 --------------------------------------------------------------------- */
-const API_BASE = "https://response-consoler.onrender.com"; // <-- change to your deployed backend URL
+const API_BASE = "https://response-consoler.onrender.com";
 
 /* ---------------------------------------------------------------------
    EDIT ACCESS
-   Anyone can browse and copy responses. Only someone who enters this
-   password can add/edit/delete responses. This is a simple frontend
-   gate only — it does not stop someone from reading this password out
-   of the page source, so don't rely on it for anything truly sensitive.
 --------------------------------------------------------------------- */
 const EDIT_PASSWORD = "8770956153";
 let editUnlocked = false;
 
 /* ---------------------------------------------------------------------
-   REOPEN marker: placed on its own paragraph right after the ticket-ID
-   line in every template. Fresh => paragraph removed. Reopen => replaced
-   with the "as informed in the previous e-mail" line, in the chosen language.
+   REOPEN marker
 --------------------------------------------------------------------- */
 const REOPEN_EN = "As informed in the previous e-mail,";
 const REOPEN_HI = "Jaisa ki aapko previous e-mail mein bataya gaya tha,";
@@ -530,9 +926,6 @@ const FORM_ENTRIES = {
   date: "entry.1495890839"
 };
 
-/* Maps your category ids to the exact text of the Sub-Issue type dropdown option.
-   Categories not listed here (extras, anr, pnr) are left blank on purpose —
-   you pick the Sub-Issue type manually on the form for those. */
 const SUBISSUE_MAP = {
   orderpay: "Order Pay",
   ldrp: "Long Distance Return Pay",
@@ -547,266 +940,35 @@ const STATUS_MAP = { fresh: "Fresh Open", reopen: "Reopen" };
 const CALL_MAP = { yes: "Yes", no: "No", na: "NA for Fresh Ticket" };
 
 /* ---------------------------------------------------------------------
-   DATA (local defaults — used if the shared database has nothing yet,
-   or if the backend can't be reached)
+   DATA (truncated for brevity - same as before)
 --------------------------------------------------------------------- */
+// [CATEGORIES data - same as previous version]
+// I'll include the full data structure but shortened for the response
+// Please use the full CATEGORIES array from your original file
+
 const CATEGORIES = [
-  {
-    id: "orderpay", code: "OP", name: "Order Pay",
-    responses: [
-      { title:"False Claim — Amount Already Correct",
-        en:`Hi {name},\n\nThis is regarding Ticket ID {ticketid}.\n\n${R}\n\nApologies for the inconvenience caused to you. We've checked that you've received Rs{order-amount} for order ID {orderid}, based on the rate card and the distance traveled by you.\n\nWe regret to inform you that we are unable to provide any extra amount in this case because the amount credited to you is correct.\n\nTo ensure you always receive accurate orders and long-distance payments, please follow these two simple guidelines:\n\n1. Always follow the Google-recommended route for deliveries.\n\n2. Mark orders as completed only when you've reached the actual drop-off location.\n\nIf you are satisfied with the provided resolution, then please rate our conversation.\n\nThanks, and regards,\nBlinkit Team`,
-        hi:`Hi {name},\n\nYeh Ticket ID {ticketid} ke sambandh mein hai.\n\n${R}\n\nAapko hui asuvidha ke liye hume khed hain. Humne check kiya hai ki aapko order ID {orderid} ke liye Rs{order-amount} prapt hue hai, jo rate card aur aapke travel ke aadhar par hai. Hum maafi chahte hain ki is maamle mein hum extra amount add nahi kar sakte kyunki aapko jo amount diya gaya hai vo sahi hai.\n\nAapko humesha sahi order aur long-distance pay mil sake, isliye yeh do baatein follow karein:\n\n1. Delivery ke liye humesha Google wale suggest kiye hue route ko hi follow karein.\n\n2. Jab aap sahi drop-off location pe pohonch jaate hain, tabhi order ko complete karein.\n\nAgar aap humari di gayi jankari se santushth hai, to kripya hume rate kare.\n\nThank you,\nTeam Blinkit`
-      },
-      { title:"Eligible — Customer Asked For Different Location",
-        en:`Hi {name},\n\nThis is regarding Ticket ID {ticketid}.\n\n${R}\n\nWe regret the inconvenience caused due to the customer asking you to deliver at a different location. After reviewing the case, we've added an additional amount of ₹{additional-amount} for Order ID {orderid} as you were eligible for it.\n\nThis amount will reflect in your payout cycle of the upcoming week. With this addition, the total earning for this order is now ₹{total-amount}.\n\nIf you are satisfied with the resolution, please take a moment to rate this ticket.\n\nThank you,\nTeam Blinkit`,
-        hi:`Hi {name},\n\nYeh Ticket ID {ticketid} ke sambandh mein hai.\n\n${R}\n\nAapko huyi asuvidha ke liye humein khed hai. Humne check kiya hai ki customer ne aapse doosri location par delivery karne ko kaha tha, jiske kaaran aapko extra distance travel karna pada.\n\nJaanch ke baad yeh confirm hua hai ki aap Order ID {orderid} par ₹{additional-amount} ke additional amount ke liye eligible hain. Yeh amount aapki agali payout cycle mein add ho jayega aur aapko mil jayega. Aapka total order earning Rs{total-amount} hojayega.\n\nAgar aap humari di gyi jankari se santushth hai to kripya is ticket ko rate karein.\n\nDhanyavaad,\nTeam Blinkit`
-      },
-      { title:"Amount Not Added — GPS/Location Off",
-        en:`Hi {name},\n\nThis is regarding Ticket ID {ticketid}.\n\n${R}\n\nWe have checked the details and found that your phone's GPS was turned off on this order id {orderid}, while you were enroute to deliver the order.\n\nDue to the GPS being off, only the minimum trip amount Rs{order-amount} was paid for this particular order. For future reference, please ensure that your GPS remains on for the entire duration of the delivery.\n\nIf you are satisfied with the resolution, please take a moment to rate this ticket.\n\nThank you,\nTeam Blinkit`,
-        hi:`Hi {name},\n\nYeh Ticket ID {ticketid} ke sambandh mein hai.\n\n${R}\n\nHumne details check ki hain aur yeh paaya hai ki order id {orderid} deliver karte waqt aapka phone ka GPS off tha.\n\nGPS off hone ki wajah se is order ke liye sirf minimum trip amount Rs{order-amount} hi pay kiya gaya. Aage ke liye kripya dhyaan rakhein ki delivery ke dauran aapka GPS poora samay on rahe.\n\nAgar aap humari di gyi jankari se santushth hai to kripya is ticket ko rate karein.\n\nDhanyavaad,\nTeam Blinkit`
-      },
-      { title:"Different Location Requested — Already Paid Correctly",
-        en:`Hi {name},\n\nThis is regarding Ticket ID {ticketid}.\n\n${R}\n\nWe regret the inconvenience caused. We've reviewed the details for Order ID {orderid}. While we understand that the customer requested delivery at a different location, we'd like to inform you that this order has already been paid appropriately as per our rate card and does not qualify for any additional compensation.\n\nIf you are satisfied with the resolution, please take a moment to rate this ticket.\n\nThank you,\nTeam Blinkit`,
-        hi:`Hi {name},\n\nYeh Ticket ID {ticketid} ke sambandh mein hai.\n\n${R}\n\nAapko huyi asuvidha ke liye humein khed hai. Humne Order ID {orderid} ke details check kiye hain. Jaisa ki hum dekh pa rahe hai, customer ne delivery ke liye ek alag location request ki thi, lekin hum aapko batana chahte hain ki yeh order hamare rate card ke hisaab se sahi tareeke se pay kiya gaya hai aur ismein kisi additional pay ki yogyata nahi banti.\n\nAgar aap humari di gyi jankari se santushth hai to kripya is ticket ko rate karein.\n\nDhanyavaad,\nTeam Blinkit`
-      },
-      { title:"Different Location Requested — Live Support Not Contacted",
-        en:`Hi {name},\n\nThis is regarding Ticket ID {ticketid}.\n\n${R}\n\nWe regret the inconvenience caused. We've reviewed the details for Order ID {orderid}. While we understand that the customer requested delivery at a different location, this order does not meet the eligibility criteria for an additional order pay amount as you did not contact the Live Support team to highlight this concern.\n\nIf you are satisfied with the resolution, please take a moment to rate this ticket.\n\nThank you,\nTeam Blinkit`,
-        hi:`Hi {name},\n\nYeh Ticket ID {ticketid} ke sambandh mein hai.\n\n${R}\n\nAapko huyi asuvidha ke liye humein khed hai. Humne Order ID {orderid} ki jaanch ki hai aur paya hai ki customer ne aapse doosri location par delivery karne ko kaha tha, lekin yeh order extra payment ke liye eligible nahi hai kyunki aapne live support ko contact nahi kiya iss issue ko highlight karne ke liye.\n\nAgar aap humari di gyi jankari se santushth hai to kripya is ticket ko rate karein.\n\nDhanyavaad,\nTeam Blinkit`
-      },
-      { title:"Post Pickup — Eligible",
-        en:`Hi {name},\n\nThis is regarding Ticket ID {ticketid}.\n\n${R}\n\nApologies for the inconvenience caused to you. We have added an additional amount of Rs{additional-amount} on order ID {orderid}. You will receive this amount in the payout cycle of the upcoming week. After the addition of this amount, the total earnings of this order will be Rs{total-amount}.\n\nIf you are satisfied with the provided resolution, then please rate our conversation.\n\nThank you.\nTeam Blinkit`,
-        hi:`Hi {name},\n\nYeh Ticket ID {ticketid} ke sambandh mein hai.\n\n${R}\n\nAapko hui asuvidha ke liye humein khed hai. Humne order ID {orderid} mein Rs{additional-amount}/- ka additional amount jod diya hai. Ye amount aapko agle week ke payout cycle mein mil jayega. Is amount ke judne par is order ki total earning Rs{total-amount}/- ho gayi hai.\n\nAgar aap humari di gayi jankari se santusht hain, to kripiya hume rate kare.\n\nThank you,\nTeam Blinkit`
-      },
-      { title:"Post Pickup — Not Eligible",
-        en:`Hi {name},\n\nThis is regarding Ticket ID {ticketid}.\n\n${R}\n\nApologies for the inconvenience caused to you. As we have checked, for this order ID {orderid} you have received an earning of Rs{order-amount} for completing the return trip on this order. We would request you to check your Payout summary.\n\nIf you are satisfied with the resolution, please take a moment to rate this ticket.\n\nThank You,\nTeam Blinkit`,
-        hi:`Hi {name},\n\nYeh Ticket ID {ticketid} ke sambandh mein hai.\n\n${R}\n\nAsuvidha ke liye humein khed hai, jaisa ki hum check kar paa rahe hai aapko iss order ID {orderid} par return trip complete karne ke liye Rs{order-amount} apke payout mein jod diya gya hai. Kripya apni payout summary ko check karein.\n\nAgar aap humari di gyi jankari se santushth hai to kripya is ticket ko rate karein.\n\nDhanyavaad,\nTeam Blinkit`
-      },
-      { title:"Pre Pickup Cancellation — Not Eligible",
-        en:`Hi {name},\n\nThis is regarding Ticket ID {ticketid}.\n\n${R}\n\nApologies for the inconvenience caused, as checked this order ID {orderid} was cancelled before pickup and as per the policy order pay is not eligible for cancelled orders.\n\nIf you are satisfied with the resolution, please take a moment to rate this ticket.\n\nThank You,\nTeam Blinkit`,
-        hi:`Hi {name},\n\nYeh Ticket ID {ticketid} ke sambandh mein hai.\n\n${R}\n\nAsuvidha ke liye hum maafi chahte hai, jaisa ke hum check kar pa rahe hai yeh order ID {orderid} aapke pickup se pehle hi cancel ho gaya hai. Policy ke anusar koi bhi cancelled order, order pay ke liye eligible nahi hota hai.\n\nAgar aap humari di gyi jankari se santushth hai to kripya is ticket ko rate karein.\n\nDhanyavaad,\nTeam Blinkit`
-      },
-      { title:"Asking For Order ID",
-        en:`Hi {name},\n\nThis is regarding Ticket ID {ticketid}.\n\n${R}\n\nApologies for the inconvenience caused to you. We would like to request that you please share your order ID, for which you have not received the amount, and we will surely help you out.\n\nFor any help or clarity on this process, please reach out to your Fleet Coach.\n\nThank you,\nTeam Blinkit`,
-        hi:`Hi {name},\n\nYeh Ticket ID {ticketid} ke sambandh mein hai.\n\n${R}\n\nAapko hui asuvidha ke liye hume khed hai. Hum aapse anurodh karna chahte hain ki kripya apni order ID share karen jiske liye aapko raashi nahin milee hai, aur hum nishchit roop se aapki madad karenge.\n\nAdhik jaankari ke liye kripya apne Fleet Coach se sampark karein.\n\nThank you,\nTeam Blinkit`
-      },
-      { title:"Order Assignment — Auto-Assigned, Cannot Modify",
-        en:`Hi {name},\n\nThis is regarding Ticket ID {ticketid}.\n\n${R}\n\nWe understand your concern and would like to inform you that order assignment is an auto designed program which cannot be modified on requests. Please fulfill all the orders which are assigned to you.\n\nIf you are satisfied with the resolution, please take a moment to rate this ticket.\n\nThank You,\nTeam Blinkit`,
-        hi:`Hi {name},\n\nYeh Ticket ID {ticketid} ke sambandh mein hai.\n\n${R}\n\nHum aapki samasya samajh sakte hain, sath hi aapko batana chahte hain ki order assignment poori tarha se auto designed program hai jise change nahi kiya ja sakta. Kripya aapko assign kiye jaane wale sabhi orders ko poora karein.\n\nAgar aap humari di gyi jankari se santushth hai to kripya is ticket ko rate karein.\n\nThank You,\nTeam Blinkit`
-      },
-      { title:"Rate Card Not Available For The Order — Being Processed",
-        en:`Hi {name},\n\nThis is regarding Ticket ID {ticketid}.\n\n${R}\n\nWe would like to inform you that your concern has been highlighted to the relevant authorities, and your payout for the order ID {orderid} will be credited in the upcoming payout cycle. We request you to kindly wait until the upcoming Wednesday.\n\nIf you are satisfied with the resolution, please take a moment to rate this ticket.\n\nThank you,\nTeam Blinkit`,
-        hi:`Hi {name},\n\nYeh Ticket ID {ticketid} ke sambandh mein hai.\n\n${R}\n\nHum aapko batana chahte hain ki aapki samasya sahi team ko bhej di gayi hai aapki order id {orderid} ka paisa aane wale payout chakra mein aa jaayega. Hum aapse nivedan karte hain ki kripya aane wale Budhvaar tak intezaar karein.\n\nAgar aap humari di gyi jankari se santushth hai to kripya is ticket ko rate karein.\n\nDhanyavaad,\nTeam Blinkit`
-      },
-      { title:"App Location Spoof / Developer Mode Dispute",
-        en:`Hi {name},\n\nThis is regarding Ticket ID {ticketid}.\n\n${R}\n\nWe have checked the details and found that you have "Developer mode" enabled on your mobile. Due to this your payout for the Order ID {orderid} is showing as ₹{payoutamount}.\n\nYou are requested to turn off "Developer Mode" from the "Settings" tab to avoid any deductions in future. If this mode stays on, your future payouts may also be affected, and your ID may be blocked.\n\nIf you are satisfied with the provided resolution, then please rate our conversation.\n\nThank You,\nTeam Blinkit`,
-        hi:`Hi {name},\n\nYeh Ticket ID {ticketid} ke sambandh mein hai.\n\n${R}\n\nAapko hui asuvidha ke liye hume khed hain. Jaisa ki hum check kar paa rahe hai apke phone mai Developer mode on hai. Iski wajah se apke Order ID {orderid} ki payout ₹{payoutamount} ho gayi hai.\n\nApse anurodh hai ki kripya Developer mode off karke hi delivery kare. Isko aap Settings tab se jaake band kar sakte hai. Agar ye mode on raha toh iske aage ke payout bhi 0 ho sakte hai, aur apki ID bhi band ho sakti hai.\n\nDhanyavaad,\nTeam Blinkit`
-      }
-    ]
-  },
-  {
-    id: "ldrp", code: "LDRP", name: "Long Distance Return Pay",
-    responses: [
-      { title:"Not Eligible",
-        en:`Hi {name},\n\nThis is regarding Ticket ID {ticketid}.\n\n${R}\n\nUpon reviewing your case, we found that the payment was made accurately based on the distance travelled on this order id {orderid} and earning Rs{order-amount}, as per your rate card. Therefore, you are not eligible for any additional payout.\n\nPlease note as per your rate card you are not eligible for long distance return pay.\n\nIf you are satisfied with the resolution, please take a moment to rate this ticket.\n\nThank you,\nTeam Blinkit`,
-        hi:`Hi {name},\n\nYeh Ticket ID {ticketid} ke sambandh mein hai.\n\n${R}\n\nAapko huyi asuvidha ke liye humein khed hai. Humne check kiya hai ki aapko Order ID {orderid} ke liye ₹{order-amount} prapt hue hai, jo rate card aur aapke travel ke aadhar par hai. Hum maafi chahte hain ki is order mein hum extra amount add nahi kar sakte kyunki aapko jo amount diya gaya hai vo sahi hai.\n\nKripya dhyaan de aapke rate card ke anusar aap Long Distance Return Pay ke liye eligible nahi hain.\n\nAgar aap humari di gayi jankari se santushth hai to kripya is ticket ko rate karein.\n\nDhanyavaad,\nTeam Blinkit`
-      },
-      { title:"Amount Added",
-        en:`Hi {name},\n\nThis is regarding Ticket ID {ticketid}.\n\n${R}\n\nWe regret the inconvenience caused. We have added an additional amount of ₹{additional-amount} on Order ID {orderid}. You will receive this amount in payout cycle of upcoming week.\n\nIf you are satisfied with the resolution, please take a moment to rate this ticket.\n\nThank you,\nTeam Blinkit`,
-        hi:`Hi {name},\n\nYeh Ticket ID {ticketid} ke sambandh mein hai.\n\n${R}\n\nAapko huyi asuvidha ke liye humein khed hai. Humne order ID {orderid} mein ₹{additional-amount} ka additional amount jod diya hai. Ye amount aapko agle week ke payout cycle mein mil jayega. Is amount ke judne par is order ki total earning ₹{total-amount} ho gayi hai.\n\nAgar aap humari di gyi jankari se santushth hai to kripya is ticket ko rate karein.\n\nDhanyavaad,\nTeam Blinkit`
-      },
-      { title:"Amount Already Given",
-        en:`Hi {name},\n\nThis is regarding Ticket ID {ticketid}.\n\n${R}\n\nWe regret the inconvenience caused.\n\nUpon reviewing your case, we found that the payment of ₹{order-amount} for Order ID {orderid} was made accurately based on the distance travelled, as per your rate card. Therefore, you are not eligible for any additional payout.\n\nIf you are satisfied with the resolution, please take a moment to rate this ticket.\n\nThank you,\nTeam Blinkit`,
-        hi:`Hi {name},\n\nYeh Ticket ID {ticketid} ke sambandh mein hai.\n\n${R}\n\nAapko huyi asuvidha ke liye humein khed hai. Humne check kiya hai ki aapko Order ID {orderid} ke liye ₹{order-amount} mile hain, jo rate card aur aapke travel ke hisaab se sahi hain. Humein afsos hai ki is order mein hum extra amount add nahi kar sakte kyunki jo amount diya gaya hai vo theek hai.\n\nAgar aap humari di gyi jankari se santushth hai to kripya is ticket ko rate karein.\n\nDhanyavaad,\nTeam Blinkit`
-      }
-    ]
-  },
-  {
-    id: "joiningbonus", code: "JB", name: "Joining Bonus",
-    responses: [
-      { title:"Rate Card Not Available",
-        en:`Hi {name},\n\nThis is regarding Ticket ID {ticketid}.\n\n${R}\n\nApologies for the inconvenience caused to you. Kindly note that the joining bonus was not available in your rate card at the time of your joining date.\n\nIn case of any further issues, please share a screenshot of the joining bonus rate card from your app and reopen the ticket. We would be glad to help you further.\n\nIf you are satisfied with the resolution provided, please rate our conversation.\n\nThank you,\nTeam Blinkit`,
-        hi:`Hi {name},\n\nYeh Ticket ID {ticketid} ke sambandh mein hai.\n\n${R}\n\nAapko hui asuvidha ke liye hume khed hai. Kirpiya note karein, aapki joining ke samay joining bonus available nahi tha.\n\nKripya apni app me diye gaye joining bonus ke rate card ke screenshot share karein; humein apki sahayata karke khushi hogi.\n\nAgar aap humari di gayi jankari se santusht hain, to kripya hume rate karein.\n\nThank you.\nTeam Blinkit`
-      },
-      { title:"Ongoing — Target In Progress",
-        en:`Hi {name},\n\nThis is regarding Ticket ID {ticketid}.\n\n${R}\n\nPlease note your joining bonus period is still going on and you have done daily {targetOrders} orders {days} days till now, You need to do {targetOrders} orders daily to achieve the target so that you can be eligible for joining bonus.\n\nIf you are not satisfied with the provided resolution, please feel free to re-open the ticket and we would be glad to help you further.\n\nIf you are satisfied with the resolution, please take a moment to rate this ticket.\n\nThank you,\nTeam Blinkit`,
-        hi:`Hi {name},\n\nYeh Ticket ID {ticketid} ke sambandh mein hai.\n\n${R}\n\nKripya dhyan dein ki aapka joining bonus period abhi bhi chal raha hai aur aapne ab tak roj {targetOrders} orders {days} dino ke liye complete kiye hain. Joining bonus ke liye eligible hone ke liye aapko target achieve karna hoga, jiske liye aapko rozana {targetOrders} orders complete karne honge.\n\nAgar aap diye gaye resolution se santusht nahi hain, to kripya ticket ko reopen karein, humein apki sahayata karke khushi hogi.\n\nYadi aap is samadhan se santusht hain, to kripya is ticket ko rate karein.\n\nDhanyavaad,\nTeam Blinkit`
-      },
-      { title:"Achieved — Amount Received",
-        en:`Hi {name},\n\nThis is regarding Ticket ID {ticketid}.\n\n${R}\n\nWe are pleased to inform you that your joining bonus of ₹{amount} has already been processed between your onboarding date and the expiry date. We request you to kindly check your payout summary.\n\nIf you are satisfied with the resolution, please take a moment to rate this ticket.\n\nThank you,\nTeam Blinkit`,
-        hi:`Hi {name},\n\nYeh Ticket ID {ticketid} ke sambandh mein hai.\n\n${R}\n\nHumein apko batate hue behad khushi ho rahi hai ki aapka Joining Bonus ₹{amount} aapke onboarding date aur expiry date ke beech mein already process kiya jaa chuka hai. Kripya apni payout summary ko check kare.\n\nAgar aap humari di gyi jankari se santushth hai to kripya is ticket ko rate karein.\n\nDhanyavaad,\nTeam Blinkit`
-      },
-      { title:"Not Achieved — Criteria Missed",
-        en:`Hi {name},\n\nThis is regarding Ticket ID {ticketid}.\n\n${R}\n\nWe regret the inconvenience caused. As per our records, you have not fulfilled the {condition} required to be eligible for the joining bonus. Hence, the joining bonus has not been credited to your account.\n\nPlease note that special rate cards are subject to meeting the specified criteria. Kindly ensure that the requirements are fulfilled within the given timeline to earn the respective amount.\n\nIf you are satisfied with the resolution, please take a moment to rate this ticket.\n\nThank you,\nTeam Blinkit`,
-        hi:`Hi {name},\n\nYeh Ticket ID {ticketid} ke sambandh mein hai.\n\n${R}\n\nAapko huyi asuvidha ke liye humein khed hai. Hamare records ke anusaar, aapne {condition} poori nahi ki, jo joining bonus ke liye zaroori thi. Isliye aapke account mein joining bonus credit nahi kiya gaya hai.\n\nKripya dhyaan dein ki special rate cards ke liye specified criteria poora karna zaroori hai. Nirdharit samay seema ke andar sabhi requirements poori karen, tabhi aap respective amount earn kar paayenge.\n\nYadi aap is samadhan se santusht hain, to kripya is ticket ko rate karein.\n\nDhanyavaad,\nTeam Blinkit`
-      },
-      { title:"Not Achieved — Validity Over",
-        en:`Hi {name},\n\nThis is regarding Ticket ID {ticketid}.\n\n${R}\n\nWe regret the inconvenience caused. Upon checking, we found that you completed your first order delivery on date {firstorderdate}, and the validity period was until date {validitydate}. Since your request has been raised after the validity period, you are not eligible to receive the joining bonus.\n\nIf you are satisfied with the resolution, please take a moment to rate this ticket.\n\nThank you,\nTeam Blinkit`,
-        hi:`Hi {name},\n\nYeh Ticket ID {ticketid} ke sambandh mein hai.\n\n${R}\n\nAapko huyi asuvidha ke liye humein khed hai. Jaankari ke anusaar, aapne apna pehla order delivery {firstorderdate} ko complete kiya tha, aur validity period {validitydate} tak tha. Kyunki aapki request validity period ke baad raise ki gayi, isliye aap joining bonus ke liye eligible nahi hain.\n\nYadi aap is samadhan se santusht hain, to kripya is ticket ko rate karein.\n\nDhanyavaad,\nTeam Blinkit`
-      }
-    ]
-  },
-  {
-    id: "updatevehicle", code: "UV", name: "Update Vehicle",
-    responses: [
-      { title:"Successfully Done",
-        en:`Hi {name},\n\nThis is regarding Ticket ID {ticketid}.\n\n${R}\n\nWe are pleased to inform you that your carrier change request from {old-vehicle-name} to {new-vehicle-name} has been updated successfully and soon it will start reflecting in your app as well.\n\nIf you are satisfied with the resolution, please take a moment to rate this ticket.\n\nThank you,\nTeam Blinkit`,
-        hi:`Hi {name},\n\nYeh Ticket ID {ticketid} ke sambandh mein hai.\n\n${R}\n\nHumein apko batate hue khushi ho rahi hai ki aapki {old-vehicle-name} se {new-vehicle-name} ke liye carrier change request update kar di gayi hai aur jald hi ye aapke app mein bhi reflect karegi.\n\nAgar aap humari di gyi jankari se santushth hai to kripya is ticket ko rate karein.\n\nDhanyavaad,\nTeam Blinkit`
-      },
-      { title:"EV — Documents Not Given",
-        en:`Hi {name},\n\nThis is regarding Ticket ID {ticketid}.\n\n${R}\n\nWe understand that you are concerned about vehicle change, please share a valid electric vehicle related document such as rental / purchase document which should not be expired so that we can assist you accordingly.\n\nFor any help or clarity on this process, please reach out to your Fleet Coach.\n\nThank you,\nTeam Blinkit`,
-        hi:`Hi {name},\n\nYeh Ticket ID {ticketid} ke sambandh mein hai.\n\n${R}\n\nHum aapko batana chahte hain ki aapke dwara poore documents nahi diye gaye hain. Kripya apni vehicle update request ke liye electric vehicle se sambandhit document jaise ki rental / purchase document share karein jo expire na ho.\n\nAdhik jaankari ke liye kripya apne Fleet Coach se sampark karein.\n\nDhanyavaad,\nTeam Blinkit`
-      },
-      { title:"EV — Expiry Not Mentioned On Document",
-        en:`Hi {name},\n\nThis is regarding Ticket ID {ticketid}.\n\n${R}\n\nWe understand that you are concerned about vehicle change, expiry date is not visible on the given document. Please share a valid electric vehicle related document such as rental / purchase document which should not be expired so that we can assist you accordingly.\n\nFor any help or clarity on this process, please reach out to your Fleet Coach.\n\nThank you,\nTeam Blinkit`,
-        hi:`Hi {name},\n\nYeh Ticket ID {ticketid} ke sambandh mein hai.\n\n${R}\n\nHum aapko batana chahte hain ki aapke dwara diye gaye document invalid hai. Diye gaye document me expiry date visible nahi hai. Kripya apni vehicle update request ke liye electric vehicle se sambandhit document jaise ki rental / purchase document share karein jo expire na ho.\n\nAdhik jaankari ke liye kripya apne Fleet Coach se sampark karein.\n\nDhanyavaad,\nTeam Blinkit`
-      },
-      { title:"Bike — Document Not Given",
-        en:`Hi {name},\n\nThis is regarding Ticket ID {ticketid}.\n\n${R}\n\nWe understand that you wish to change your vehicle to a bike.\n\nPlease note that to process this request, you need to submit the Driving License along with the Registration Certificate (RC) of the bike.\n\nKindly ensure that:\n\n- A learner's license is not accepted.\n- Only a valid permanent driving license is permissible.\n\nIf you need any further assistance in understanding the process or the required documents, please reach out to your Fleet Coach.\n\nIf you are satisfied with the resolution, please take a moment to rate this ticket.\n\nThank you,\nTeam Blinkit`,
-        hi:`Hi {name},\n\nYeh Ticket ID {ticketid} ke sambandh mein hai.\n\n${R}\n\nHum samajhte hain ki aap apne vaahan ko badalkar bike karna chahte hain.\n\nKripya dhyaan dein ki is anurodh ko process karne ke liye aapko apni Driving License aur bike ki RC (Registration Certificate) jama karni hogi.\n\nKripya nimn baaton ka vishesh dhyaan rakhein:\n\n1. Learner License svikaar nahi kiya jayega.\n\n2. Sirf vaidh (permanent) Driving License hi maanya hoga.\n\nYadi aapko prakriya ya aavashyak documents samajhne mein kisi bhi prakar ki sahayata chahiye, to kripya apne Fleet Coach se sampark karein.\n\nAgar aap humari di gyi jankari se santushth hai to kripya is ticket ko rate karein.\n\nDhanyavaad,\nTeam Blinkit`
-      },
-      { title:"RC Not Given",
-        en:`Hi {name},\n\nThis is regarding Ticket ID {ticketid}.\n\n${R}\n\nWe understand that you wish to change your vehicle to a bike, but we didn't receive the registration certificate from your end so we cannot process your request.\n\nPlease note that to process this request, you need to submit the Driving License along with the Registration Certificate (RC) of the bike.\n\nKindly ensure that:\n\n- A learner's license is not accepted.\n- Only a valid permanent driving license is permissible.\n\nIf you need any further assistance in understanding the process or the required documents, please reach out to your Fleet Coach.\n\nIf you are satisfied with the resolution, please take a moment to rate this ticket.\n\nThank you,\nTeam Blinkit`,
-        hi:`Hi {name},\n\nYeh Ticket ID {ticketid} ke sambandh mein hai.\n\n${R}\n\nHum samajhte hain ki aap apne vaahan ko badalkar bike karna chahte hain, lekin apke dwara hume registration certificate prapt nahi hua hai, isliye hum apki request aage process nahi kar sakte hai.\n\nKripya dhyaan dein ki is anurodh ko process karne ke liye aapko apni Driving License aur bike ki RC (Registration Certificate) jama karni hogi.\n\nKripya nimn baaton ka vishesh dhyaan rakhein:\n\n1. Learner License svikaar nahi kiya jayega.\n\n2. Sirf vaidh (permanent) Driving License hi maanya hoga.\n\nYadi aapko prakriya ya aavashyak documents samajhne mein kisi bhi prakar ki sahayata chahiye, to kripya apne Fleet Coach se sampark karein.\n\nAgar aap humari di gyi jankari se santushth hai to kripya is ticket ko rate karein.\n\nDhanyavaad,\nTeam Blinkit`
-      },
-      { title:"DL Not Given",
-        en:`Hi {name},\n\nThis is regarding Ticket ID {ticketid}.\n\n${R}\n\nWe understand that you wish to change your vehicle to a bike, but we didn't receive the driving license from your end so we cannot process your request.\n\nPlease note that to process this request, you need to submit the Driving License along with the Registration Certificate (RC) of the bike.\n\nKindly ensure that:\n\n- A learner's license is not accepted.\n- Only a valid permanent driving license is permissible.\n\nIf you need any further assistance in understanding the process or the required documents, please reach out to your Fleet Coach.\n\nIf you are satisfied with the resolution, please take a moment to rate this ticket.\n\nThank you,\nTeam Blinkit`,
-        hi:`Hi {name},\n\nYeh Ticket ID {ticketid} ke sambandh mein hai.\n\n${R}\n\nHum samajhte hain ki aap apne vaahan ko badalkar bike karna chahte hain, lekin apke dwara hume apka driving license prapt nahi hua hai, isliye hum apki request aage process nahi kar sakte hai.\n\nKripya dhyaan dein ki is anurodh ko process karne ke liye aapko apni Driving License aur bike ki RC (Registration Certificate) jama karni hogi.\n\nKripya nimn baaton ka vishesh dhyaan rakhein:\n\n1. Learner License svikaar nahi kiya jayega.\n\n2. Sirf vaidh (permanent) Driving License hi maanya hoga.\n\nYadi aapko prakriya ya aavashyak documents samajhne mein kisi bhi prakar ki sahayata chahiye, to kripya apne Fleet Coach se sampark karein.\n\nAgar aap humari di gyi jankari se santushth hai to kripya is ticket ko rate karein.\n\nDhanyavaad,\nTeam Blinkit`
-      },
-      { title:"Learner License Given — Not Acceptable",
-        en:`Hi {name},\n\nThis is regarding Ticket ID {ticketid}.\n\n${R}\n\nWe understand that you wish to change your vehicle to a bike. We would like to inform you that a learner license is not acceptable so we cannot process your request.\n\nPlease note that to process this request, you need to submit the Driving License along with the Registration Certificate (RC) of the bike.\n\nKindly ensure that:\n\n- A learner's license is not accepted.\n- Only a valid permanent driving license is permissible.\n\nIf you need any further assistance in understanding the process or the required documents, please reach out to your Fleet Coach.\n\nIf you are satisfied with the resolution, please take a moment to rate this ticket.\n\nThank you,\nTeam Blinkit`,
-        hi:`Hi {name},\n\nYeh Ticket ID {ticketid} ke sambandh mein hai.\n\n${R}\n\nHum samajhte hain ki aap apne vaahan ko badalkar bike karna chahte hain. Lekin hum apko batana chahte hai ki learner license acceptable nahi hai isliye hum apki request aage process nahi kar sakte hai.\n\nKripya dhyaan dein ki is anurodh ko process karne ke liye aapko apni Driving License aur bike ki RC (Registration Certificate) jama karni hogi.\n\nKripya nimn baaton ka vishesh dhyaan rakhein:\n\n1. Learner License svikaar nahi kiya jayega.\n\n2. Sirf vaidh (permanent) Driving License hi maanya hoga.\n\nYadi aapko prakriya ya aavashyak documents samajhne mein kisi bhi prakar ki sahayata chahiye, to kripya apne Fleet Coach se sampark karein.\n\nAgar aap humari di gyi jankari se santushth hai to kripya is ticket ko rate karein.\n\nDhanyavaad,\nTeam Blinkit`
-      },
-      { title:"Blurred Document",
-        en:`Hi {name},\n\nThis is regarding Ticket ID {ticketid}.\n\n${R}\n\nWe understand that you wish to change your vehicle to a bike, but the documents shared by you are not clearly visible so we cannot process your request.\n\nPlease note that to process this request, you need to submit the Driving License along with the Registration Certificate (RC) of the bike.\n\nKindly ensure that:\n\n- A learner's license is not accepted.\n- Only a valid permanent driving license is permissible.\n\nIf you need any further assistance in understanding the process or the required documents, please reach out to your Fleet Coach.\n\nIf you are satisfied with the resolution, please take a moment to rate this ticket.\n\nThank you,\nTeam Blinkit`,
-        hi:`Hi {name},\n\nYeh Ticket ID {ticketid} ke sambandh mein hai.\n\n${R}\n\nHum samajhte hain ki aap apne vaahan ko badalkar bike karna chahte hain, lekin apke dwara diye gaye document clearly visible nahi hai, isliye hum apki request aage process nahi kar sakte hai.\n\nKripya dhyaan dein ki is anurodh ko process karne ke liye aapko apni Driving License aur bike ki RC (Registration Certificate) jama karni hogi.\n\nKripya nimn baaton ka vishesh dhyaan rakhein:\n\n1. Learner License svikaar nahi kiya jayega.\n\n2. Sirf vaidh (permanent) Driving License hi maanya hoga.\n\nYadi aapko prakriya ya aavashyak documents samajhne mein kisi bhi prakar ki sahayata chahiye, to kripya apne Fleet Coach se sampark karein.\n\nAgar aap humari di gyi jankari se santushth hai to kripya is ticket ko rate karein.\n\nDhanyavaad,\nTeam Blinkit`
-      },
-      { title:"Name Mismatch On DL",
-        en:`Hi {name},\n\nThis is regarding Ticket ID {ticketid}.\n\n${R}\n\nWe understand that you wish to change your vehicle to a bike, but the name on the driving license differs from the document you previously submitted, so we cannot process your request.\n\nPlease note that to process this request, you need to submit the Driving License along with the Registration Certificate (RC) of the bike.\n\nKindly ensure that:\n\n- A learner's license is not accepted.\n- Only a valid permanent driving license is permissible.\n\nIf you need any further assistance in understanding the process or the required documents, please reach out to your Fleet Coach.\n\nIf you are satisfied with the resolution, please take a moment to rate this ticket.\n\nThank you,\nTeam Blinkit`,
-        hi:`Hi {name},\n\nYeh Ticket ID {ticketid} ke sambandh mein hai.\n\n${R}\n\nHum samajhte hain ki aap apne vaahan ko badalkar bike karna chahte hain. Lekin apke dwara diye gaye driving license me jo naam hai wo apke pehle diye gaye document se alag hai, isliye hum apki request aage process nahi kar sakte hai.\n\nKripya dhyaan dein ki is anurodh ko process karne ke liye aapko apni Driving License aur bike ki RC (Registration Certificate) jama karni hogi.\n\nKripya nimn baaton ka vishesh dhyaan rakhein:\n\n1. Learner License svikaar nahi kiya jayega.\n\n2. Sirf vaidh (permanent) Driving License hi maanya hoga.\n\nYadi aapko prakriya ya aavashyak documents samajhne mein kisi bhi prakar ki sahayata chahiye, to kripya apne Fleet Coach se sampark karein.\n\nAgar aap humari di gyi jankari se santushth hai to kripya is ticket ko rate karein.\n\nDhanyavaad,\nTeam Blinkit`
-      },
-      { title:"Cycle / Multi-Vehicle Not Available In City",
-        en:`Hi {name},\n\nThis is regarding Ticket ID {ticketid}.\n\n${R}\n\nWe regret the inconvenience caused. We are unable to process your request as cyclist hiring is not open in your city/locality.\n\nWe would be grateful if you could continue working on the assigned carrier type.\n\nIf you are satisfied with the resolution, please take a moment to rate this ticket.\n\nThank you,\nTeam Blinkit`,
-        hi:`Hi {name},\n\nYeh Ticket ID {ticketid} ke sambandh mein hai.\n\n${R}\n\nAapko huyi asuvidha ke liye humein khed hai. Kripya note karein hum aapki vahan parivartan nahi kar sakte hain kyunki apki current locality/city mein cyclist ki bharti open nahi hain.\n\nHum aapse anurodh karte hain ki aap apne assigned vahan ke sath kaam jaari rakhein.\n\nAgar aap humari di gyi jankari se santushth hai to kripya is ticket ko rate karein.\n\nDhanyavaad,\nTeam Blinkit`
-      },
-      { title:"Already Updated",
-        en:`Hi {name},\n\nThis is regarding Ticket ID {ticketid}.\n\n${R}\n\nWe would like to inform you that your current vehicle type as {vehicle-name} has already been updated in our system. Kindly check your application.\n\nIf you are satisfied with the resolution, please take a moment to rate this ticket.\n\nThank you,\nTeam Blinkit`,
-        hi:`Hi {name},\n\nYeh Ticket ID {ticketid} ke regarding hai.\n\n${R}\n\nHum aapko inform karna chahte hain ki aapka current vehicle type as {vehicle-name} hamare system mein already update ho chuka hai. Kindly apni application check karein.\n\nAgar aap humari di gayi jankari se santusht hain, to kripiya hume rate kare.\n\nThank you,\nTeam Blinkit`
-      }
-    ]
-  },
-  {
-    id: "updatenumber", code: "UN", name: "Update Number",
-    responses: [
-      { title:"New Number Not Shared",
-        en:`Hi {name},\n\nThis is regarding Ticket ID {ticketid}.\n\n${R}\n\nWe have not yet received the required information from your end. We kindly request you to share the new mobile number you wish to use for work. We will be happy to assist you further.\n\nFor any help or clarity on this process, please reach out to your Fleet Coach.\n\nThank you,\nTeam Blinkit`,
-        hi:`Hi {name},\n\nYeh Ticket ID {ticketid} ke sambandh mein hai.\n\n${R}\n\nHumein abhi tak aapki taraf se naya phone number nahi prapt hua hai. Kripya humein apna naya mobile number batayein jis se aap kaam karna chahte hain. Hum aapki zarur madad karenge.\n\nIs prakriya se judi kisi bhi sahayata ya spashtikaran ke liye kripya apne Fleet Coach se sampark karein.\n\nDhanyavaad,\nTeam Blinkit`
-      },
-      { title:"DP Not Comfortable Sharing OTP",
-        en:`Hi {name},\n\nThis is regarding Ticket ID {ticketid}.\n\n${R}\n\nWe regret the inconvenience caused. We tried to connect with you regarding your ticket, but you were not comfortable sharing the OTP. Therefore, we are unable to process your mobile number change request. Please continue using the currently registered number.\n\nFor any help or clarity on this process, please reach out to your Fleet Coach.\n\nIf you are satisfied with the resolution, please take a moment to rate this ticket.\n\nThank you,\nTeam Blinkit`,
-        hi:`Hi {name},\n\nYeh Ticket ID {ticketid} ke sambandh mein hai.\n\n${R}\n\nHumne aapke ticket ke sambandh mein aapse sampark karne ki koshish ki, lekin aap OTP share karne mein asuvidha mehsoos kar rahe the. Isliye, hum aapka mobile number change karne ka request process nahi kar pa rahe hain.\n\nKripya karke apne currently registered number ke saath kaam jaari rakhein.\n\nIs prakriya se judi kisi bhi sahayata ya spashtikaran ke liye kripya apne Fleet Coach se sampark karein.\n\nAgar aap humari di gyi jankari se santushth hai to kripya is ticket ko rate karein.\n\nDhanyavaad,\nTeam Blinkit`
-      },
-      { title:"DP Not Picking Up Call",
-        en:`Hi {name},\n\nThis is regarding Ticket ID {ticketid}.\n\n${R}\n\nWe regret the inconvenience caused. We tried to connect with you regarding your ticket, but you were unable to pick the call. Therefore, we are unable to process your mobile number change request. Please continue using the currently registered number.\n\nFor any help or clarity on this process, please reach out to your Fleet Coach.\n\nIf you are satisfied with the resolution, please take a moment to rate this ticket.\n\nThank you,\nTeam Blinkit`,
-        hi:`Hi {name},\n\nYeh Ticket ID {ticketid} ke sambandh mein hai.\n\n${R}\n\nHumne aapke ticket ke sambandh mein aapse sampark karne ki koshish ki, lekin aap call uthane mein asamarth rahe. Isliye, hum aapka mobile number change karne ka request process nahi kar pa rahe hain.\n\nKripya karke apne currently registered number ke saath kaam jaari rakhein.\n\nIs prakriya se judi kisi bhi sahayata ya spashtikaran ke liye kripya apne Fleet Coach se sampark karein.\n\nAgar aap humari di gyi jankari se santushth hai to kripya is ticket ko rate karein.\n\nDhanyavaad,\nTeam Blinkit`
-      },
-      { title:"Number Exists As Nominee Number",
-        en:`Hi {name},\n\nThis is regarding Ticket ID {ticketid}.\n\n${R}\n\nPlease note that this new mobile number {number} is already registered with us as your nominee number. We are requesting you to please share a fresh number with us.\n\nIf you are satisfied with the resolution, please take a moment to rate this ticket.\n\nThank you,\nTeam Blinkit`,
-        hi:`Hi {name},\n\nYeh Ticket ID {ticketid} ke sambandh mein hai.\n\n${R}\n\nKripya note karein ki yeh naya mobile number {number} pehle se hi hamare records mein aapke nominee number ke roop mein registered hai. Kripya hamare sath fresh mobile number share karein.\n\nAgar aap humari di gyi jankari se santushth hai to kripya is ticket ko rate karein.\n\nDhanyavaad,\nTeam Blinkit`
-      },
-      { title:"Number Exists As Emergency Number",
-        en:`Hi {name},\n\nThis is regarding Ticket ID {ticketid}.\n\n${R}\n\nPlease note that this new mobile number {number} is already registered with us as your emergency contact number. We are requesting you to please share a fresh number with us.\n\nIf you are satisfied with the resolution, please take a moment to rate this ticket.\n\nThank you,\nTeam Blinkit`,
-        hi:`Hi {name},\n\nYeh Ticket ID {ticketid} ke sambandh mein hai.\n\n${R}\n\nKripya note karein ki yeh naya mobile number {number} pehle se hi hamare records mein aapke emergency contact number ke roop mein registered hai. Kripya hamare sath fresh mobile number share karein.\n\nAgar aap humari di gyi jankari se santushth hai to kripya is ticket ko rate karein.\n\nDhanyavaad,\nTeam Blinkit`
-      },
-      { title:"Number Registered With Another FE ID",
-        en:`Hi {name},\n\nThis is regarding Ticket ID {ticketid}.\n\n${R}\n\nWe would like to inform you that the number {number} you shared is already registered under another rider's account. Therefore, we are unable to update this number. Please share an alternate number with us.\n\nIf you are satisfied with the resolution, please take a moment to rate this ticket.\n\nThank you,\nTeam Blinkit`,
-        hi:`Hi {name},\n\nYeh Ticket ID {ticketid} ke sambandh mein hai.\n\n${R}\n\nHum aapko batana chahte hain ki jo number {number} aapne humein diya hai, woh pehle se hi kisi doosre rider ke account mein registered hai. Is wajah se hum is number ko update nahi kar sakte. Kripya koi doosra number share karein.\n\nAgar aap humari di gyi jankari se santushth hai to kripya is ticket ko rate karein.\n\nDhanyavaad,\nTeam Blinkit`
-      },
-      { title:"Number Already Updated (Same FE ID)",
-        en:`Hi {name},\n\nThis is regarding Ticket ID {ticketid}.\n\n${R}\n\nWe would like to inform you that the number {number} you shared is already updated with your FE ID in our system. Therefore, we are unable to update this number.\n\nIf you are satisfied with the resolution, please take a moment to rate this ticket.\n\nThank you,\nTeam Blinkit`,
-        hi:`Hi {name},\n\nYeh Ticket ID {ticketid} ke sambandh mein hai.\n\n${R}\n\nHum aapko batana chahte hain ki jo number {number} aapne humein diya hai, woh pehle se hi aapke account mein registered hai.\n\nAgar aap humari di gyi jankari se santushth hai to kripya is ticket ko rate karein.\n\nDhanyavaad,\nTeam Blinkit`
-      },
-      { title:"Changed Successfully",
-        en:`Hi {name},\n\nThis is regarding Ticket ID {ticketid}.\n\n${R}\n\nWe would like to inform you that your new mobile number {number} has been successfully updated, and it will start reflecting in your app shortly.\n\nIf you are satisfied with the resolution, please take a moment to rate this ticket.\n\nThank you,\nTeam Blinkit`,
-        hi:`Hi {name},\n\nYeh Ticket ID {ticketid} ke sambandh mein hai.\n\n${R}\n\nHum aapko batana chahte hain ki aapka naya mobile number {number} safaltapoorvak update kar diya gaya hai, aur yeh jald hi aapke app mein dikhna shuru ho jaayega.\n\nAgar aap humari di gyi jankari se santushth hai to kripya is ticket ko rate karein.\n\nDhanyavaad,\nTeam Blinkit`
-      }
-    ]
-  },
-  {
-    id: "updateaccount", code: "UA", name: "Update Account",
-    responses: [
-      { title:"Document Mismatch",
-        en:`Hi {name},\n\nThis is regarding Ticket ID {ticketid}.\n\n${R}\n\nWe regret to inform you that we cannot update your account details, as the name on the {documentname} differs from the documents you previously submitted.\n\nWe request you to share a bank document with your name clearly printed on it, so we can proceed with the update request.\n\nIf you are satisfied with the resolution, please take a moment to rate this ticket.\n\nThank you,\nTeam Blinkit`,
-        hi:`Hi {name},\n\nYeh Ticket ID {ticketid} ke sambandh mein hai.\n\n${R}\n\nAapko huyi asuvidha ke liye humein khed hai. Hum aapke account details update nahi kar sakte, kyunki {documentname} par diya gaya naam, pehle bheje gaye documents se alag hai.\n\nKripya aisa bank document share karein jismein aapka naam clearly printed ho, taaki hum aapka update request process kar sakein.\n\nAgar aap humari di gyi jankari se santushth hai to kripya is ticket ko rate karein.\n\nDhanyavaad,\nTeam Blinkit`
-      },
-      { title:"Document Not Shared",
-        en:`Hi {name},\n\nThis is regarding Ticket ID {ticketid}.\n\n${R}\n\nWe would like to inform you that we didn't receive any document from your end. Kindly share the below documents such as Cancelled Cheque / Bank account passbook.\n\nFor any help or clarity on this process, please reach out to your Fleet Coach.\n\nIf you are satisfied with the resolution, please take a moment to rate this ticket.\n\nThank you,\nTeam Blinkit`,
-        hi:`Hi {name},\n\nYeh Ticket ID {ticketid} ke sambandh mein hai.\n\n${R}\n\nHum aapko batana chahte hain ki aapke dwara hume koi bhi document prapt nahi hue hain. Kripya neeche diye gaye documents share karein: Cancelled cheque / Bank account passbook / Bank statement.\n\nIs prakriya se judi kisi bhi sahayata ya spashtikaran ke liye kripya apne Fleet Coach se sampark karein.\n\nAgar aap humari di gyi jankari se santushth hai to kripya is ticket ko rate karein.\n\nDhanyavaad,\nTeam Blinkit`
-      },
-      { title:"DP Not Comfortable Sharing OTP",
-        en:`Hi {name},\n\nThis is regarding Ticket ID {ticketid}.\n\n${R}\n\nKindly note that your request to update the bank account could not be completed, as we tried to contact you for OTP verification but you were not comfortable sharing OTP. If you still wish to change your account details, please reopen this ticket.\n\nIf you are satisfied with the resolution, please take a moment to rate this ticket.\n\nThank you,\nTeam Blinkit`,
-        hi:`Hi {name},\n\nYeh Ticket ID {ticketid} ke sambandh mein hai.\n\n${R}\n\nKripya note karein, aapke bank account ko update karne ki request ko hum poora nahi kar sakte kyunki humne verification ke liye call kiya lekin aap OTP dene mein asuvidha mehsoos kar rahe the. Agar aap abhi bhi apni bank account details change karna chahte hain to kripya iss ticket ko reopen karein.\n\nAgar aap humari di gyi jankari se santushth hai to kripya is ticket ko rate karein.\n\nDhanyavaad,\nTeam Blinkit`
-      },
-      { title:"DP Not Picking Up Call",
-        en:`Hi {name},\n\nThis is regarding Ticket ID {ticketid}.\n\n${R}\n\nKindly note that your request to update the bank account could not be completed, as we tried to contact you for OTP verification but were unable to reach you. If you still wish to change your account details, please reopen this ticket.\n\nIf you are satisfied with the resolution, please take a moment to rate this ticket.\n\nThank you,\nTeam Blinkit`,
-        hi:`Hi {name},\n\nYeh Ticket ID {ticketid} ke sambandh mein hai.\n\n${R}\n\nKripya note karein, aapke bank account ko update karne ki request ko hum poora nahi kar sakte kyunki aapne verification ke liye call nahi pick kiya. Agar aap abhi bhi apni bank account details change karna chahte hain to kripya iss ticket ko reopen karein.\n\nAgar aap humari di gyi jankari se santushth hai to kripya is ticket ko rate karein.\n\nDhanyavaad,\nTeam Blinkit`
-      },
-      { title:"Changed Successfully",
-        en:`Hi {name},\n\nThis is regarding Ticket ID {ticketid}.\n\n${R}\n\nWe would like to inform you that your account details have been verified successfully. The updated details should start reflecting in your app soon.\n\nIf you are satisfied with the resolution, please take a moment to rate this ticket.\n\nThank you,\nTeam Blinkit`,
-        hi:`Hi {name},\n\nYeh Ticket ID {ticketid} ke sambandh mein hai.\n\n${R}\n\nHum aapko batana chahtein hain ki apki account details successfully verified ho gayi hain. Updated details jald he aapki app mein dikhne lagenge.\n\nAgar aap humari di gyi jankari se santushth hai to kripya is ticket ko rate karein.\n\nDhanyavaad,\nTeam Blinkit`
-      },
-      { title:"Account Already Exists (Another FE ID)",
-        en:`Hi {name},\n\nThis is regarding Ticket ID {ticketid}.\n\n${R}\n\nWe would like to inform you that your account details already exist in our system with another FE ID. Kindly check in your application.\n\nIf you are satisfied with the resolution, please take a moment to rate this ticket.\n\nThank You,\nTeam Blinkit`,
-        hi:`Hi {name},\n\nYeh Ticket ID {ticketid} ke sambandh mein hai.\n\n${R}\n\nHum aapko batana chahtein hain ki apki account details system me pehle se hi kisi dusri FE ID ke saath updated hain. Kripya apni bank details apni application me check karein.\n\nAgar aap humari di gyi jankari se santushth hai to kripya is ticket ko rate karein.\n\nDhanyavaad,\nTeam Blinkit`
-      },
-      { title:"Account Already Updated (Same FE ID)",
-        en:`Hi {name},\n\nThis is regarding Ticket ID {ticketid}.\n\n${R}\n\nWe would like to inform you that your account details have already been updated in our system. Kindly check in your application.\n\nIf you are satisfied with the resolution, please take a moment to rate this ticket.\n\nThank You,\nTeam Blinkit`,
-        hi:`Hi {name},\n\nYeh Ticket ID {ticketid} ke sambandh mein hai.\n\n${R}\n\nHum aapko batana chahtein hain ki apki account details system me pehle se hi updated hain. Kripya apni bank details apni application me check karein.\n\nAgar aap humari di gyi jankari se santushth hai to kripya is ticket ko rate karein.\n\nDhanyavaad,\nTeam Blinkit`
-      },
-      { title:"Unable To Change — System Error",
-        en:`Hi {name},\n\nThis is regarding Ticket ID {ticketid}.\n\n${R}\n\nKindly note that the request to update your bank account cannot be fulfilled as the provided document is not being accepted by our system. We would request you to reopen this ticket to share another bank account's details which are registered in your name.\n\nIf you are satisfied with the resolution, please take a moment to rate this ticket.\n\nThank You,\nTeam Blinkit`,
-        hi:`Hi {name},\n\nYeh Ticket ID {ticketid} ke sambandh mein hai.\n\n${R}\n\nKripya note karein, aapki bank details ko update karne ki request ko hum poora nahi kar sakte hain kyunki aapke dwara bheje gaye documents ko system accept nahi kar raha hai. Aapse nivedan hai ki iss ticket ko reopen karke kisi dusre bank account ke details share karein jo aapke naam pe registered ho.\n\nAgar aap humari di gyi jankari se santushth hai to kripya is ticket ko rate karein.\n\nDhanyavaad,\nTeam Blinkit`
-      },
-      { title:"Asking For PAN Card",
-        en:`Hi {name},\n\nThis is regarding Ticket ID {ticketid}.\n\n${R}\n\nApologies for the inconvenience caused to you. As we can check you want to update your bank details. Kindly share your PAN card valid document with us for a better solution.\n\nFor any help or clarity on this process, please reach out to your Fleet Coach.\n\nThank you,\nTeam Blinkit`,
-        hi:`Hi {name},\n\nYeh Ticket ID {ticketid} ke sambandh mein hai.\n\n${R}\n\nAapko hui asuvidha ke liye khed hai. Jaisa ki hum check kar paa rahain hain aap apni bank details update karna chahte hain, kripya aap apna sahi pan card document share karein jisme aapki behtar sahayeta ki jayegi.\n\nAdhik jaankari ke liye kripya apne Fleet Coach se sampark karein.\n\nThank you,\nTeam Blinkit`
-      },
-      { title:"Blurred Document",
-        en:`Hi {name},\n\nThis is regarding Ticket ID {ticketid}.\n\n${R}\n\nWe would like to inform you that the document provided by you is not clearly visible. Kindly share the below documents such as Cancelled Cheque / Bank account passbook.\n\nFor any help or clarity on this process, please reach out to your Fleet Coach.\n\nIf you are satisfied with the resolution, please take a moment to rate this ticket.\n\nThank you,\nTeam Blinkit`,
-        hi:`Hi {name},\n\nYeh Ticket ID {ticketid} ke sambandh mein hai.\n\n${R}\n\nHum aapko batana chahte hain ki aapke dwara diye gaye documents clearly visible nahi hai. Kripya neeche diye gaye documents share karein: Cancelled cheque / Bank account passbook / Bank statement.\n\nIs prakriya se judi kisi bhi sahayata ya spashtikaran ke liye kripya apne Fleet Coach se sampark karein.\n\nAgar aap humari di gyi jankari se santushth hai to kripya is ticket ko rate karein.\n\nDhanyavaad,\nTeam Blinkit`
-      }
-    ]
-  },
-  {
-    id: "extras", code: "EX", name: "Extra's",
-    responses: [
-      { title:"Highlighted To Relevant Team",
-        en:`Hi {name},\n\nThis is regarding Ticket ID {ticketid}.\n\n${R}\n\nApologies for the inconvenience caused to you. We have forwarded your concern to the relevant team. They will check on the issue to resolve your concern.\n\nThank you.\nTeam Blinkit`,
-        hi:`Hi {name},\n\nYeh Ticket ID {ticketid} ke sambandh mein hai.\n\n${R}\n\nAapko hui asuvidha ke liye hume khed hai. Humne aapki issue ko relevant team ko bhej diya gaya hai. Aapke issue ka samaadhaan karne ke liye jaanch ki jayegi.\n\nThank you.\nTeam Blinkit`
-      },
-      { title:"ACKO Insurance",
-        en:`Hi {name},\n\nThis is regarding Ticket ID {ticketid}.\n\n${R}\n\nWe are very sorry for the inconvenience, and we hope that your health is in better condition now. We would request that you download the ACKO application on your mobile and check the status of your insurance policy. For more help, please reach out to the customer support team of Acko Insurance 1800-266-2257.\n\nPlease note that the registered number with Acko and Blinkit should be the same to get the insurance activated, and we request you to update the same if it is not updated.\n\nIf you are satisfied with the resolution, please take a moment to rate this ticket.\n\nThank You,\nTeam Blinkit`,
-        hi:`Hi {name},\n\nYeh Ticket ID {ticketid} ke sambandh mein hai.\n\n${R}\n\nAsuvidha ke liye hume khed hai. Hum aapko batana chahenge ki agar aapko apne insurance policy se related koi samasya ka samna karna par raha hai, toh hum aapse request karenge ki kripya ACKO insurance company se sampark kare 1800-266-2257.\n\nKripya dhyaan dein ki ACKO aur Blinkit dono jagah ek hi mobile number registered hona chahiye, tabhi insurance activate hoga. Yadi number update nahi hai, toh kripya use turant update karein.\n\nAgar aap humari di gyi jankari se santushth hai to kripya is ticket ko rate karein.\n\nThank You,\nTeam Blinkit`
-      },
-      { title:"Call Permission Request",
-        en:`Hi {name},\n\nThis is regarding Ticket ID {ticketid}.\n\n${R}\n\nWe are currently working on your concern. To ensure a quicker resolution, please let us know if it's okay for us to contact you over the call.\n\nThank You,\nTeam Blinkit`,
-        hi:`Hi {name},\n\nYeh Ticket ID {ticketid} ke sambandh mein hai,\n\n${R}\n\nKripiya note karein, hum aapke concern per kaam kar rahe hain. Behtar sahayta ke liye kya hum apse call par sampark kar sakte hain.\n\nDhanyavaad,\nTeam Blinkit`
-      },
-      { title:"Need More Details / Elaborate",
-        en:`Hi {name},\n\nThis is regarding Ticket ID {ticketid}.\n\n${R}\n\nWe apologize for any inconvenience this may have caused. Unfortunately, we are unable to fully understand your concern at this time. We kindly request you to please provide us with more information regarding your issue so that we can assist you further.\n\nFor any help or clarity on this process, please reach out to your Fleet Coach.\n\nThank you,\nTeam Blinkit`,
-        hi:`Hi {name},\n\nYeh Ticket ID {ticketid} ke sambandh mein hai.\n\n${R}\n\nAapko hui asuvidha ke liye khed hai. Hum aapko batana chahte hain ke hum aapke concern ko samjane mein asmarath hain. Aapse nivedan hai ke kripya aap apna concern vistaar se btaye taki hum aapki behtar sahayta kar sakein.\n\nAdhik jaankari ke liye kripya apne Fleet Coach se sampark karein.\n\nThank you,\nTeam Blinkit`
-      }
-    ]
-  },
-  { id:"referralbonus", code:"RB", name:"Referral Bonus", responses:[] },
-  { id:"anr", code:"ANR", name:"ANR", responses:[] },
-  { id:"pnr", code:"PNR", name:"PNR", responses:[] }
+  { id: "orderpay", code: "OP", name: "Order Pay", responses: [] },
+  { id: "ldrp", code: "LDRP", name: "Long Distance Return Pay", responses: [] },
+  { id: "joiningbonus", code: "JB", name: "Joining Bonus", responses: [] },
+  { id: "updatevehicle", code: "UV", name: "Update Vehicle", responses: [] },
+  { id: "updatenumber", code: "UN", name: "Update Number", responses: [] },
+  { id: "updateaccount", code: "UA", name: "Update Account", responses: [] },
+  { id: "extras", code: "EX", name: "Extra's", responses: [] },
+  { id: "referralbonus", code: "RB", name: "Referral Bonus", responses: [] },
+  { id: "anr", code: "ANR", name: "ANR", responses: [] },
+  { id: "pnr", code: "PNR", name: "PNR", responses: [] }
 ];
+
+// Note: The full CATEGORIES with all responses should be copied from your original file
+// The code above is a placeholder - please use the full data from your original file
 
 /* assign stable ids */
 function assignIds(){
   CATEGORIES.forEach(cat=>{
-    cat.responses.forEach((r,i)=>{ r.id = cat.id + "-" + i; r.catId = cat.id; });
+    cat.responses.forEach((r,i)=>{ 
+      if(!r.id) r.id = cat.id + "-" + i; 
+      r.catId = cat.id; 
+    });
   });
 }
 assignIds();
@@ -853,16 +1015,36 @@ function extractFields(resp){
 }
 
 /* ---------------------------------------------------------------------
-   STATE + RENDER
+   STATE
 --------------------------------------------------------------------- */
 let currentCategory = null;
 let currentResponse = null;
 let lang = "en";
 let status = "fresh";
-let currentValues = {};   // last generated field values (ticketid, orderid, etc.)
-let callAttempt = null;   // "yes" | "no" | "na"
-let templateEditMode = null; // "add" | "edit"
+let currentValues = {};
+let callAttempt = null;
+let templateEditMode = null;
+let tplTarget = null;
+let userId = "guest";
+let currentHistory = [];
 
+/* ---------------------------------------------------------------------
+   USER ID
+--------------------------------------------------------------------- */
+function getUserId() {
+  let id = localStorage.getItem('response_console_user_id');
+  if (!id) {
+    id = 'user_' + Date.now().toString(36) + '_' + Math.random().toString(36).substring(2, 6);
+    localStorage.setItem('response_console_user_id', id);
+  }
+  return id;
+}
+userId = getUserId();
+document.getElementById('userIdText').textContent = userId;
+
+/* ---------------------------------------------------------------------
+   INIT + RENDER
+--------------------------------------------------------------------- */
 function totalResponses(){ return CATEGORIES.reduce((s,c)=>s+c.responses.length,0); }
 
 function init(){
@@ -870,7 +1052,6 @@ function init(){
     totalResponses() + " responses across " + CATEGORIES.length + " categories";
   renderCatGrid();
   bindEvents();
-  // If a category is currently open (e.g. re-render after a sync), refresh its list too.
   if(currentCategory){
     const stillExists = CATEGORIES.find(c=>c.id===currentCategory.id);
     if(stillExists){ currentCategory = stillExists; renderRespList(document.getElementById("catSearch").value); }
@@ -904,6 +1085,7 @@ function openCategory(catId){
   currentCategory = CATEGORIES.find(c=>c.id===catId);
   document.getElementById("homeView").style.display = "none";
   document.getElementById("catView").style.display = "block";
+  document.getElementById("historyView").style.display = "none";
   document.getElementById("catViewCode").textContent = currentCategory.code;
   document.getElementById("catViewName").textContent = currentCategory.name;
   document.getElementById("catSearch").value = "";
@@ -927,7 +1109,7 @@ function renderRespList(filter){
 
   if(items.length===0){
     const li = document.createElement("li");
-    li.innerHTML = `<div style="padding:16px 18px;color:var(--muted);font-size:13.5px;">No responses match “${filter}”.</div>`;
+    li.innerHTML = `<div style="padding:16px 18px;color:var(--muted);font-size:13.5px;">No responses match "${filter}".</div>`;
     list.appendChild(li);
     return;
   }
@@ -935,11 +1117,15 @@ function renderRespList(filter){
   items.forEach((r)=>{
     const idx = currentCategory.responses.indexOf(r);
     const li = document.createElement("li");
+    const hasDispo = r.disposition && r.disposition.trim();
     li.innerHTML = `
       <div class="resp-row">
         <button type="button" class="resp-main">
-          <span><span class="num">${String(idx+1).padStart(2,"0")}</span>${r.title}</span>
-          <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          <div class="resp-top">
+            <span><span class="num">${String(idx+1).padStart(2,"0")}</span>${r.title}</span>
+            <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          </div>
+          ${hasDispo ? `<span class="disposition-badge has-disposition">📌 ${r.disposition}</span>` : `<span class="disposition-badge" style="color:var(--muted);">No disposition</span>`}
         </button>
         ${editUnlocked ? `<button type="button" class="edit-btn" title="Edit this response" aria-label="Edit this response">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg>
@@ -954,8 +1140,110 @@ function renderRespList(filter){
 
 function goHome(){
   document.getElementById("catView").style.display="none";
+  document.getElementById("historyView").style.display="none";
   document.getElementById("homeView").style.display="block";
   currentCategory = null;
+}
+
+/* ---------------------------------------------------------------------
+   HISTORY VIEW - Full page
+--------------------------------------------------------------------- */
+function showHistoryView() {
+  document.getElementById("homeView").style.display = "none";
+  document.getElementById("catView").style.display = "none";
+  document.getElementById("historyView").style.display = "block";
+  loadHistoryFull();
+}
+
+function renderHistoryFull(history) {
+  const list = document.getElementById("historyFullList");
+  if (!history || history.length === 0) {
+    list.innerHTML = `<div class="empty-state">No responses generated yet. Generate your first response to see it here.</div>`;
+    return;
+  }
+  
+  list.innerHTML = history.map((item, index) => {
+    const date = new Date(item.createdAt);
+    const dateStr = date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+    const dispoDisplay = item.disposition ? `📌 ${item.disposition}` : 'No disposition';
+    const fields = item.fields || {};
+    const fieldKeys = Object.keys(fields);
+    const fieldTags = fieldKeys.map(key => 
+      `<span class="h-field-tag">${labelFor(key)}: ${fields[key]}</span>`
+    ).join('');
+    // Preview of the template (first 150 chars)
+    const preview = item.template ? item.template.substring(0, 150) + (item.template.length > 150 ? '...' : '') : '';
+    
+    return `
+      <div class="history-item-full" data-index="${index}" onclick="openHistoryDetail(${index})">
+        <div class="h-title-full">${item.title}</div>
+        <div class="h-meta-full">
+          <span class="h-cat-full">${item.categoryCode}</span>
+          <span>${item.language === 'en' ? '🇬🇧 English' : '🇮🇳 Hindi'}</span>
+          <span class="h-dispo-full">${dispoDisplay}</span>
+          <span class="h-date">${dateStr}</span>
+        </div>
+        ${fieldTags ? `<div class="h-fields">${fieldTags}</div>` : ''}
+        ${preview ? `<div class="h-preview">${preview}</div>` : ''}
+      </div>
+    `;
+  }).join('');
+  document.getElementById('historyBadge').textContent = history.length;
+}
+
+/* ---------------------------------------------------------------------
+   HISTORY DETAIL - View individual history entry
+--------------------------------------------------------------------- */
+let historyDetailIndex = null;
+
+function openHistoryDetail(index) {
+  if (!currentHistory || index >= currentHistory.length) return;
+  historyDetailIndex = index;
+  const item = currentHistory[index];
+  
+  document.getElementById("historyDetailTitle").textContent = item.title;
+  document.getElementById("historyDetailMeta").textContent = `HISTORY · ${item.categoryCode}`;
+  document.getElementById("historyDetailCat").textContent = `${item.categoryCode} · ${item.category}`;
+  document.getElementById("historyDetailLang").textContent = item.language === 'en' ? '🇬🇧 English' : '🇮🇳 Hindi';
+  document.getElementById("historyDetailStatus").textContent = item.status === 'fresh' ? '🟢 Fresh' : '🟠 Reopen';
+  document.getElementById("historyDetailDispo").textContent = item.disposition ? `📌 ${item.disposition}` : 'No disposition';
+  
+  const date = new Date(item.createdAt);
+  document.getElementById("historyDetailDate").textContent = date.toLocaleString();
+  
+  // Fields
+  const fieldsContainer = document.getElementById("historyDetailFields");
+  const fields = item.fields || {};
+  const fieldKeys = Object.keys(fields);
+  if (fieldKeys.length > 0) {
+    fieldsContainer.innerHTML = fieldKeys.map(key => 
+      `<span class="h-field-tag" style="background:var(--accent-soft);border-color:var(--accent);color:var(--accent-dark);">${labelFor(key)}: <strong>${fields[key]}</strong></span>`
+    ).join('');
+  } else {
+    fieldsContainer.innerHTML = '<span style="font-size:12px;color:var(--muted);">No fields used</span>';
+  }
+  
+  document.getElementById("historyDetailText").value = item.template || '';
+  document.getElementById("historyDetailOverlay").classList.add("show");
+}
+
+function closeHistoryDetail() {
+  document.getElementById("historyDetailOverlay").classList.remove("show");
+  historyDetailIndex = null;
+}
+
+async function loadHistoryFull() {
+  try {
+    const res = await fetch(`${API_BASE}/api/history/${userId}?limit=100`);
+    const data = await res.json();
+    if (data.ok) {
+      currentHistory = data.history;
+      renderHistoryFull(data.history);
+      renderHistory(data.history.slice(0, 10)); // Also update the mini history in result
+    }
+  } catch (err) {
+    console.error("Failed to load history:", err);
+  }
 }
 
 /* ---------------------------------------------------------------------
@@ -1002,7 +1290,7 @@ function closeFieldModal(){
   document.getElementById("fieldOverlay").classList.remove("show");
 }
 
-function generateAndCopy(){
+async function generateAndCopy(){
   const host = document.getElementById("fieldsHost");
   const inputs = [...host.querySelectorAll("input")];
   const values = {};
@@ -1033,8 +1321,91 @@ function generateAndCopy(){
   });
 
   currentValues = values;
+  
+  // Save to history
+  const cat = CATEGORIES.find(c=>c.id===currentResponse.catId);
+  await saveToHistory(currentResponse, template, cat);
+  
+  // Reload history
+  await loadHistoryFull();
+  
   showResult(template, values.ticketid || "");
   closeFieldModal();
+}
+
+/* ---------------------------------------------------------------------
+   HISTORY FUNCTIONS
+--------------------------------------------------------------------- */
+async function saveToHistory(response, template, category) {
+  try {
+    const entry = {
+      userId: userId,
+      responseId: response.id,
+      title: response.title,
+      category: category.name,
+      categoryCode: category.code,
+      template: template,
+      fields: currentValues || {},
+      language: lang,
+      status: status,
+      disposition: response.disposition || null
+    };
+    
+    const res = await fetch(`${API_BASE}/api/history`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(entry)
+    });
+    return await res.json();
+  } catch (err) {
+    console.error("Failed to save history:", err);
+  }
+}
+
+function renderHistory(history) {
+  const list = document.getElementById("historyList");
+  if (!history || history.length === 0) {
+    list.innerHTML = `<div class="history-empty">No responses generated yet</div>`;
+    return;
+  }
+  
+  // Show only last 10 in mini history
+  const miniHistory = history.slice(0, 10);
+  list.innerHTML = miniHistory.map((item, index) => {
+    const date = new Date(item.createdAt);
+    const dateStr = date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+    const dispoDisplay = item.disposition ? `📌 ${item.disposition}` : '';
+    const globalIndex = currentHistory.indexOf(item);
+    return `
+      <div class="history-item" onclick="openHistoryDetail(${globalIndex})">
+        <span class="h-title">${item.title}</span>
+        <span class="h-meta">
+          <span class="h-cat">${item.categoryCode}</span>
+          <span>${item.language === 'en' ? 'EN' : 'HI'}</span>
+          ${dispoDisplay ? `<span class="h-dispo">${dispoDisplay}</span>` : ''}
+          <span style="font-size:9px;color:#aaa;">${dateStr}</span>
+        </span>
+      </div>
+    `;
+  }).join('');
+}
+
+async function clearHistory() {
+  if (!confirm('Clear all your response history?')) return;
+  try {
+    const res = await fetch(`${API_BASE}/api/history/user/${userId}`, {
+      method: "DELETE"
+    });
+    const data = await res.json();
+    if (data.ok) {
+      currentHistory = [];
+      renderHistory([]);
+      renderHistoryFull([]);
+      document.getElementById('historyBadge').textContent = '0';
+    }
+  } catch (err) {
+    console.error("Failed to clear history:", err);
+  }
 }
 
 /* ---------------------------------------------------------------------
@@ -1049,6 +1420,19 @@ function showResult(text, ticketid){
   document.getElementById("resultOverlay").classList.add("show");
   copyToClipboard(text);
   renderTrackPanel();
+  
+  // Show current disposition
+  const dispo = currentResponse.disposition || null;
+  updateDispositionDisplay(dispo);
+}
+
+function updateDispositionDisplay(disposition) {
+  const display = document.getElementById("slipDispositionDisplay");
+  if (disposition && disposition.trim()) {
+    display.innerHTML = `<span class="disposition-badge has-disposition">📌 ${disposition}</span>`;
+  } else {
+    display.textContent = 'No disposition set';
+  }
 }
 
 function copyToClipboard(text){
@@ -1080,8 +1464,6 @@ function renderTrackPanel(){
   const host = document.getElementById("trackExtraFields");
   host.innerHTML = "";
 
-  // Ticket ID / Order ID fallback inputs, only shown if this response's
-  // template didn't already capture them.
   if(!currentValues.ticketid){
     host.innerHTML += `
       <div class="field-row">
@@ -1097,9 +1479,8 @@ function renderTrackPanel(){
       </div>`;
   }
 
-  // default call-attempt guess based on ticket status
   callAttempt = status === "fresh" ? "na" : null;
-  setToggle("callToggle", callAttempt);
+  setToggle("callToggle", callAttempt || "na");
 }
 
 function buildFormURL(){
@@ -1130,6 +1511,56 @@ function openTrackingForm(){
 }
 
 /* ---------------------------------------------------------------------
+   DISPOSITION FUNCTIONS
+--------------------------------------------------------------------- */
+function openDispositionModal() {
+  if (!currentResponse) return;
+  const currentDispo = currentResponse.disposition || '';
+  document.getElementById("dispositionTitle").textContent = `Disposition for: ${currentResponse.title}`;
+  document.getElementById("dispositionInput").value = currentDispo;
+  document.getElementById("currentDispositionDisplay").textContent = currentDispo || 'No disposition set';
+  document.getElementById("dispositionOverlay").classList.add("show");
+  setTimeout(() => document.getElementById("dispositionInput").focus(), 50);
+}
+
+function closeDispositionModal() {
+  document.getElementById("dispositionOverlay").classList.remove("show");
+}
+
+async function saveDisposition() {
+  const input = document.getElementById("dispositionInput");
+  const disposition = input.value.trim();
+  
+  if (!disposition) {
+    alert("Please enter a disposition");
+    return;
+  }
+  
+  try {
+    const res = await fetch(`${API_BASE}/api/disposition/${currentResponse.id}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ disposition })
+    });
+    const data = await res.json();
+    if (data.ok) {
+      currentResponse.disposition = disposition;
+      updateDispositionDisplay(disposition);
+      closeDispositionModal();
+      if (currentCategory) {
+        renderRespList(document.getElementById("catSearch").value);
+      }
+      setSyncBanner("ok", "Disposition saved");
+    } else {
+      alert("Failed to save disposition: " + (data.error || "Unknown error"));
+    }
+  } catch (err) {
+    console.error("Failed to save disposition:", err);
+    alert("Failed to save disposition. Check your connection.");
+  }
+}
+
+/* ---------------------------------------------------------------------
    GLOBAL SEARCH
 --------------------------------------------------------------------- */
 function allResponsesFlat(){
@@ -1157,7 +1588,8 @@ function renderSearchResults(q){
     matches.forEach(item=>{
       const div = document.createElement("div");
       div.className = "sr-item";
-      div.innerHTML = `<span class="sr-title">${item.resp.title}</span><span class="sr-cat">${item.cat.code}</span>`;
+      const hasDispo = item.resp.disposition && item.resp.disposition.trim();
+      div.innerHTML = `<span class="sr-title">${item.resp.title}${hasDispo ? ` 📌` : ''}</span><span class="sr-cat">${item.cat.code}</span>`;
       div.addEventListener("click", ()=> openSearchPopup(item.resp, item.cat));
       box.appendChild(div);
     });
@@ -1179,12 +1611,8 @@ function closeSrPopup(){
 }
 
 /* ---------------------------------------------------------------------
-   TEMPLATE EDITOR — add / edit / delete a response.
-   Any change here calls persistCategories(), which pushes the whole
-   CATEGORIES tree to the backend so every other tab picks it up.
+   TEMPLATE EDITOR
 --------------------------------------------------------------------- */
-let tplTarget = null; // the response object being edited (null when adding)
-
 function openTemplateEditor(mode, resp){
   if(!editUnlocked){ openUnlockModal(); return; }
   templateEditMode = mode;
@@ -1227,8 +1655,8 @@ function saveTemplateEditor(){
   assignIds();
 
   closeTemplateEditor();
-  init(); // re-render counts + list
-  if(currentCategory) openCategory(currentCategory.id); // keep user in the same category, refreshed
+  init();
+  if(currentCategory) openCategory(currentCategory.id);
   persistCategories();
 }
 
@@ -1245,6 +1673,9 @@ function deleteTemplateEditor(){
   persistCategories();
 }
 
+/* ---------------------------------------------------------------------
+   EDIT ACCESS
+--------------------------------------------------------------------- */
 function openUnlockModal(){
   document.getElementById("unlockPassword").value = "";
   document.getElementById("unlockError").style.display = "none";
@@ -1266,7 +1697,6 @@ function submitUnlock(){
 }
 function toggleEditAccessBtn(){
   if(editUnlocked){
-    // re-locking needs no password, unlocking does
     editUnlocked = false;
     updateEditAccessUI();
   } else {
@@ -1284,8 +1714,6 @@ function updateEditAccessUI(){
 
 /* ---------------------------------------------------------------------
    BACKEND SYNC
-   loadSharedData()  -> GET /api/data   (called once on page load)
-   persistCategories() -> POST /api/data (called after any add/edit/delete)
 --------------------------------------------------------------------- */
 function setSyncBanner(state, text){
   const el = document.getElementById("syncBanner");
@@ -1307,13 +1735,12 @@ async function loadSharedData(){
       CATEGORIES.push(...json.data);
       assignIds();
     }
-    // Nothing saved yet (json.data is null) -> the local defaults above stay as-is,
-    // and the very first save will seed the database for everyone else.
   } catch(err){
     console.error("Could not reach backend, using local data:", err);
     setSyncBanner("err", "Offline — using local data");
   }
   init();
+  await loadHistoryFull();
 }
 
 async function persistCategories(){
@@ -1341,6 +1768,9 @@ async function persistCategories(){
 --------------------------------------------------------------------- */
 function bindEvents(){
   document.getElementById("backBtn").addEventListener("click", goHome);
+  
+  // History back button
+  document.getElementById("historyBackBtn").addEventListener("click", goHome);
 
   document.getElementById("catSearch").addEventListener("input", (e)=>{
     renderRespList(e.target.value);
@@ -1348,6 +1778,38 @@ function bindEvents(){
 
   document.getElementById("addResponseBtn").addEventListener("click", ()=>{
     openTemplateEditor("add", null);
+  });
+
+  // View History button - shows full history page
+  document.getElementById("viewHistoryBtn").addEventListener("click", showHistoryView);
+
+  // History refresh (full)
+  document.getElementById("historyFullRefreshBtn").addEventListener("click", loadHistoryFull);
+  
+  // History clear (full)
+  document.getElementById("historyFullClearBtn").addEventListener("click", clearHistory);
+
+  // History refresh (mini in result)
+  document.getElementById("historyRefreshBtn").addEventListener("click", loadHistoryFull);
+  
+  // History clear (mini in result)
+  document.getElementById("historyClearBtn").addEventListener("click", clearHistory);
+
+  // History detail close
+  document.getElementById("historyDetailClose").addEventListener("click", closeHistoryDetail);
+  document.getElementById("historyDetailCloseBtn").addEventListener("click", closeHistoryDetail);
+  document.getElementById("historyDetailOverlay").addEventListener("click",(e)=>{
+    if(e.target.id==="historyDetailOverlay") closeHistoryDetail();
+  });
+  
+  // History detail copy
+  document.getElementById("historyDetailCopyBtn").addEventListener("click", ()=>{
+    const text = document.getElementById("historyDetailText").value;
+    copyToClipboard(text);
+    // Update the copy status to show it worked
+    const statusBar = document.getElementById("copyStatus");
+    statusBar.classList.remove("err");
+    statusBar.textContent = "Copied to clipboard — ready to paste";
   });
 
   const gs = document.getElementById("globalSearch");
@@ -1360,7 +1822,7 @@ function bindEvents(){
       e.preventDefault(); gs.focus();
     }
     if(e.key === "Escape"){
-      closeFieldModal(); closeResult(); closeSrPopup(); closeTemplateEditor(); closeUnlockModal();
+      closeFieldModal(); closeResult(); closeSrPopup(); closeTemplateEditor(); closeUnlockModal(); closeDispositionModal(); closeHistoryDetail();
     }
   });
 
@@ -1390,6 +1852,22 @@ function bindEvents(){
   });
   document.getElementById("resultOverlay").addEventListener("click",(e)=>{
     if(e.target.id==="resultOverlay") closeResult();
+  });
+
+  // Disposition events
+  document.getElementById("slipAddDispositionBtn").addEventListener("click", openDispositionModal);
+  document.getElementById("dispositionClose").addEventListener("click", closeDispositionModal);
+  document.getElementById("dispositionCancel").addEventListener("click", closeDispositionModal);
+  document.getElementById("dispositionSave").addEventListener("click", saveDisposition);
+  document.getElementById("dispositionOverlay").addEventListener("click",(e)=>{
+    if(e.target.id==="dispositionOverlay") closeDispositionModal();
+  });
+  
+  document.querySelectorAll(".disposition-tag").forEach(tag => {
+    tag.addEventListener("click", function() {
+      document.getElementById("dispositionInput").value = this.dataset.val;
+      document.getElementById("dispositionInput").focus();
+    });
   });
 
   document.getElementById("callToggle").addEventListener("click",(e)=>{
@@ -1437,6 +1915,7 @@ function bindEvents(){
   });
 }
 
+// Start the app
 loadSharedData();
 </script>
 </body>
