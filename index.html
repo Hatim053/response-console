@@ -138,6 +138,20 @@
   .cat-header .cat-code{font-size:13px;padding:6px 11px;}
   .cat-header h2{margin:0;font-size:22px;font-weight:600;letter-spacing:-0.01em;}
 
+  .rca-panel{
+    background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+    padding:16px 18px;margin-bottom:18px;
+  }
+  .rca-panel-head{
+    font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.06em;text-transform:uppercase;
+    color:var(--accent-dark);margin-bottom:12px;font-weight:600;
+  }
+  .rca-inputs{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+  .rca-inputs .field-row{margin-bottom:0;}
+  .rca-actions{display:flex;gap:10px;flex-wrap:wrap;}
+  .rca-hint{font-size:12px;color:var(--warn);margin:10px 0 0;}
+  @media (max-width:560px){ .rca-inputs{grid-template-columns:1fr;} }
+
   .mini-search{
     display:flex;align-items:center;gap:8px;background:var(--surface);
     border:1px solid var(--border);border-radius:10px;padding:9px 13px;margin-bottom:16px;
@@ -624,6 +638,27 @@
       <span class="cat-code" id="catViewCode"></span>
       <h2 id="catViewName"></h2>
     </div>
+
+    <div class="rca-panel" id="rcaPanel" style="display:none;">
+      <div class="rca-panel-head">⚡ Automate RCA</div>
+      <div class="rca-inputs">
+        <div class="field-row">
+          <label for="rcaFeId">FE ID</label>
+          <input type="text" id="rcaFeId" placeholder="e.g. FE10119968">
+        </div>
+        <div class="field-row">
+          <label for="rcaOrderId">Order ID</label>
+          <input type="text" id="rcaOrderId" placeholder="e.g. 2553271057">
+        </div>
+      </div>
+      <div class="rca-actions">
+        <button class="btn btn-primary" id="rcaOpenBtn" type="button">Open RCA tabs</button>
+        <button class="btn btn-ghost" id="rcaCloseBtn" type="button" style="display:none;">Close all RCA tabs</button>
+      </div>
+      <p class="rca-hint" id="rcaCopyNote" style="display:none;color:var(--accent-dark);">✅ Order ID copied to clipboard — for the Shipment tab, click into its search field and paste (Ctrl+V) instead of retyping.</p>
+      <p class="rca-hint" id="rcaHint" style="display:none;">Only some tabs opened — your browser blocked the rest as pop-ups. Click the pop-up-blocked icon in the address bar and choose "Always allow" for this site, then try again.</p>
+    </div>
+
     <div class="mini-search">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
       <input type="text" id="catSearch" placeholder="Filter responses in this category…">
@@ -1090,8 +1125,61 @@ function openCategory(catId){
   document.getElementById("catViewName").textContent = currentCategory.name;
   document.getElementById("catSearch").value = "";
   document.getElementById("addResponseBtn").style.display = editUnlocked ? "block" : "none";
+  document.getElementById("rcaPanel").style.display = (catId === "orderpay") ? "block" : "none";
+  document.getElementById("rcaHint").style.display = "none";
+  document.getElementById("rcaCloseBtn").style.display = rcaWindows.length ? "inline-flex" : "none";
   renderRespList("");
   window.scrollTo({top:0, behavior:"instant"});
+}
+
+/* ---------------------------------------------------------------------
+   AUTOMATE RCA — Order Pay only.
+   Opens 4 tabs (3 keyed on Order ID, 1 on FE ID) and can close them all
+   again in one click. Nothing here is saved or synced — it's just a
+   local shortcut for opening the right lookup tools.
+--------------------------------------------------------------------- */
+const RCA_LINKS = [
+  { key: "orderid", build: id => `https://lifeline.blinkit.com/lifeline?type=order_id&value=${id}&org_id=1` },
+  { key: "orderid", build: id => `https://dashboard.runnr.in/order-payout/blinkit/order_id/${id}` },
+  { key: "orderid", build: id => `https://dashboard.runnr.in/orders` },
+  { key: "feid",    build: id => `https://ops.runnr.in/admin/driver_support?driver_id=${id}#!#rate_card` }
+];
+let rcaWindows = [];
+
+function openRcaTabs(){
+  const feId = document.getElementById("rcaFeId").value.trim();
+  const orderId = document.getElementById("rcaOrderId").value.trim();
+  if(!feId || !orderId){
+    alert("Please enter both FE ID and Order ID.");
+    return;
+  }
+
+  // Copy Order ID to clipboard so it's ready to paste into any dashboard
+  // that doesn't accept it as a URL parameter (e.g. the Shipment search page).
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(orderId).catch(()=>{});
+  }
+
+  rcaWindows = RCA_LINKS.map(link=>{
+    const id = link.key === "orderid" ? orderId : feId;
+    return window.open(link.build(encodeURIComponent(id)), "_blank");
+  });
+  const blockedCount = rcaWindows.filter(w => !w).length;
+  document.getElementById("rcaHint").style.display = blockedCount > 0 ? "block" : "none";
+  document.getElementById("rcaCloseBtn").style.display = "inline-flex";
+
+  const copyNote = document.getElementById("rcaCopyNote");
+  if(copyNote){
+    copyNote.style.display = "block";
+    clearTimeout(copyNote._hideTimer);
+    copyNote._hideTimer = setTimeout(()=>{ copyNote.style.display = "none"; }, 6000);
+  }
+}
+
+function closeRcaTabs(){
+  rcaWindows.forEach(w=>{ try{ if(w && !w.closed) w.close(); }catch(e){} });
+  rcaWindows = [];
+  document.getElementById("rcaCloseBtn").style.display = "none";
 }
 
 function renderRespList(filter){
@@ -1779,6 +1867,9 @@ function bindEvents(){
   document.getElementById("addResponseBtn").addEventListener("click", ()=>{
     openTemplateEditor("add", null);
   });
+
+  document.getElementById("rcaOpenBtn").addEventListener("click", openRcaTabs);
+  document.getElementById("rcaCloseBtn").addEventListener("click", closeRcaTabs);
 
   // View History button - shows full history page
   document.getElementById("viewHistoryBtn").addEventListener("click", showHistoryView);
